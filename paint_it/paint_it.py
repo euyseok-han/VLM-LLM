@@ -14,14 +14,15 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 warnings.simplefilter("ignore", FutureWarning)
 import time
-from nvdiff_render.mesh import *
-from nvdiff_render.render import *
-from nvdiff_render.texture import *
-from nvdiff_render.material import *
-from nvdiff_render.obj import *
-from utils import *
-from dc_pbr import skip
-from sd import StableDiffusion
+
+from paint_it.nvdiff_render.mesh import *
+from paint_it.nvdiff_render.render import *
+from paint_it.nvdiff_render.texture import *
+from paint_it.nvdiff_render.material import *
+from paint_it.nvdiff_render.obj import *
+from paint_it.utils import *
+from paint_it.dc_pbr import skip
+from paint_it.sd import StableDiffusion
 
 glctx = dr.RasterizeCudaContext()
 OBJECT_PATH = './data'
