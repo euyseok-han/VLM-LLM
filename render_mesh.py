@@ -52,6 +52,7 @@ def render(data_dir):
     mesh = load_objs_as_meshes([obj_filename], device=device)
 
     # 렌더링 설정
+    global raster_settings
     raster_settings = RasterizationSettings(
         image_size=512,
         blur_radius=0.0,
