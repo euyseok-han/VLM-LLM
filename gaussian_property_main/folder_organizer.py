@@ -5,18 +5,19 @@ from rembg import remove
 from utils.sam_utils import resize_image
 
 
-def process_images(remove_bg):
-    all_images = os.listdir(BASE_PATH)
+def process_images(base_path, remove_bg):
+    all_images = os.listdir(base_path)
+    save_base_path = base_path + '_dirs'
 
     for image_name in all_images:
         base_name, _ = os.path.splitext(image_name)
 
         # Create directories for saving processed images
-        image_dir = os.path.join(SAVE_BASE_PATH, base_name, 'images')
+        image_dir = os.path.join(save_base_path, base_name, 'images')
         os.makedirs(image_dir, exist_ok=True)
 
         # Open the image
-        image_path = os.path.join(BASE_PATH, image_name)
+        image_path = os.path.join(base_path, image_name)
 
         with Image.open(image_path) as img_pil:
             if remove_bg:
@@ -36,7 +37,6 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     # Constants for directory paths
-    BASE_PATH = args.folder_path
-    SAVE_BASE_PATH = args.folder_path + '_dirs'
+    base_path = args.folder_path
 
-    process_images(args.remove)
+    process_images(base_path, args.remove)
