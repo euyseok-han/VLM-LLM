@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description = "Part-level Segmentation using SAM")
     parser.add_argument('--dataset_path', type=str, default="./2d_output_dirs")
-    parser.add_argument('--sam_ckpt_path', type=str, default="./Gaussian-Property-main/sam_vit_h_4b8939.pth")
+    parser.add_argument('--sam_ckpt_path', type=str, default="/local_data_2/urp25su_hanuiseok/sam_vit_h_4b8939.pth")
     args = parser.parse_args()
     torch.set_default_dtype(torch.float32)
 
