@@ -4,7 +4,6 @@
 benchmark/
 datasets/
 cache/
-logs/
 report/
 outputs/
 submodules/
