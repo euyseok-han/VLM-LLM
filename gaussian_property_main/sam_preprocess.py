@@ -4,7 +4,7 @@ import torch
 import argparse
 import numpy as np
 from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
-from utils.sam_utils import create, seed_everything,save_gpt_input
+from gaussian_property_main.utils.sam_utils import create, seed_everything,save_gpt_input
 
 
 
