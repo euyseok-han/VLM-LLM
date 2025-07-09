@@ -1,3 +1,4 @@
+import argparse
 import os
 import torch
 import matplotlib.pyplot as plt
@@ -17,23 +18,34 @@ from pytorch3d.renderer import (
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 # 메시 파일 로딩
-DATA_DIR = "./data/9ce8ab24383c4c93b4c1c7c3848abc52"
-obj_filename = os.path.join(DATA_DIR, "mesh.obj")
-mesh = load_objs_as_meshes([obj_filename], device=device)
 
-# 렌더링 설정
-raster_settings = RasterizationSettings(
-    image_size=512,
-    blur_radius=0.0,
-    faces_per_pixel=1,
-)
+def render(data_dir):
+    obj_filename = os.path.join(data_dir, "mesh.obj")
+    mesh = load_objs_as_meshes([obj_filename], device=device)
 
-# 시점 목록
+    # 렌더링 설정
+    raster_settings = RasterizationSettings(
+        image_size=512,
+        blur_radius=0.0,
+        faces_per_pixel=1,
+    )
 
-# 출력 폴더 생성
-output_dir = "./2d_output"
-os.makedirs(output_dir, exist_ok=True)
+    # 시점 목록
 
+    # 출력 폴더 생성
+    output_dir = "./2d_output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # 렌더링 및 저장
+    for elev in [0, 90]:
+        for azim in range(0, 360, 90):
+            renderer = get_renderer_with_light(elev, azim)
+            image = renderer(mesh)[0, ..., :3].cpu().numpy()
+            # 저장
+            save_path = os.path.join(output_dir, f"view_{elev}_{azim}.png")
+            plt.imsave(save_path, image)
+            if elev == 90:
+                break
 # 렌더러 생성 함수
 def get_renderer_with_light(elev = 0, azim = 0):
     dist = 5
@@ -62,16 +74,7 @@ def get_renderer_with_light(elev = 0, azim = 0):
     )
     return renderer
 
-# 렌더링 및 저장
-for elev in [0, 90]:
-    for azim in range(0, 360, 90):
-        renderer = get_renderer_with_light(elev, azim)
-        image = renderer(mesh)[0, ..., :3].cpu().numpy()
-        # 저장
-        save_path = os.path.join(output_dir, f"view_{elev}_{azim}.png")
-        plt.imsave(save_path, image)
-        if elev == 90:
-            break
+
 
 # # 화면 출력도 함께 하고 싶다면 아래 코드 사용
 # fig, axes = plt.subplots(2, 2, figsize=(12, 12))
@@ -83,3 +86,9 @@ for elev in [0, 90]:
 
 # plt.tight_layout()
 # plt.show()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description = "render 3d to 2d image and save")
+    parser.add_argument('--input_dir', type=str, default="./data/9ce8ab24383c4c93b4c1c7c3848abc52")
+    args = parser.parse_args()
+    render(args.input_dir)

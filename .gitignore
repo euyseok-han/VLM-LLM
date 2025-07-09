@@ -9,3 +9,5 @@ report/
 outputs/
 submodules/
 external/
+*.pth
+*.pyc
