@@ -2,7 +2,7 @@ import os
 import argparse
 from PIL import Image
 from rembg import remove
-from utils.sam_utils import resize_image
+from gaussian_property_main.utils.sam_utils import resize_image
 
 
 def process_images(base_path, remove_bg):
