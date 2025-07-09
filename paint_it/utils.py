@@ -4,7 +4,7 @@ import pickle as pkl
 from pathlib import Path
 import subprocess
 import random
-from nvdiff_render import util
+from paint_it.nvdiff_render import util
 import torchvision
 import torchvision.transforms as T
 
