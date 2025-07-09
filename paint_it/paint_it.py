@@ -292,7 +292,8 @@ if __name__ == '__main__':
     args = parse_args()
 
     mesh_dicts = {
-        "a4ded463d03e480c82b2b58e471d52f3": "xx"
+        "f82039689f504922995936c68484aa61": "A can drink Fanta",
+        "d3bfe628db1d47ec9501ee7b5ebce9e3": "a building"
     }
 
     # load stable-diffusion model

@@ -19,7 +19,7 @@ import numpy as np
 # 디바이스 설정
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
-def get_camera_distance_from_obj(obj_path, scale_factor=2.7):
+def get_camera_distance_from_obj(obj_path, scale_factor=2.4):
     # mesh 로드
     mesh = trimesh.load(obj_path, force='mesh')
 
