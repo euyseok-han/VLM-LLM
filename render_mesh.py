@@ -13,14 +13,31 @@ from pytorch3d.renderer import (
     MeshRasterizer,
     SoftPhongShader,
 )
+import trimesh
+import numpy as np
 
 # 디바이스 설정
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
+def get_camera_distance_from_obj(obj_path, scale_factor=2.7):
+    # mesh 로드
+    mesh = trimesh.load(obj_path, force='mesh')
+
+    # AABB bounds
+    bounds = mesh.bounds  # shape (2, 3)
+    min_corner, max_corner = bounds
+
+    # 대각선 길이 (전체 사이즈)
+    diag_len = np.linalg.norm(max_corner - min_corner)
+
+    # 카메라 거리 결정
+    distance = diag_len * scale_factor
+    return distance
+
+
 # 메시 파일 로딩
 # 렌더러 생성 함수
-def get_renderer_with_light(elev = 0, azim = 0):
-    dist = 5
+def get_renderer_with_light(elev = 0, azim = 0, dist=5):
     R, T = look_at_view_transform(dist=dist, elev=elev, azim=azim, device=device)
     cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
     T_reshaped = T.unsqueeze(2)
@@ -49,6 +66,8 @@ def get_renderer_with_light(elev = 0, azim = 0):
 
 def render(data_dir):
     obj_filename = os.path.join(data_dir, "mesh.obj")
+    dist = get_camera_distance_from_obj(obj_path=obj_filename)
+    print("dist: ####", dist)
     mesh = load_objs_as_meshes([obj_filename], device=device)
 
     # 렌더링 설정
@@ -69,7 +88,7 @@ def render(data_dir):
     # 렌더링 및 저장
     for elev in [0, 90]:
         for azim in range(0, 360, 90):
-            renderer = get_renderer_with_light(elev, azim)
+            renderer = get_renderer_with_light(elev, azim, dist)
             image = renderer(mesh)[0, ..., :3].cpu().numpy()
             # 저장
             save_path = os.path.join(output_dir, f"view_{elev}_{azim}.png")
