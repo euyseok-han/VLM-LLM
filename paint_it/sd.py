@@ -56,10 +56,13 @@ class StableDiffusion(nn.Module):
             raise ValueError(f'Stable-diffusion version {self.sd_version} not supported.')
 
         # Create model
-        self.vae = AutoencoderKL.from_pretrained(model_key, subfolder="vae").to(self.device)
-        self.tokenizer = CLIPTokenizer.from_pretrained(model_key, subfolder="tokenizer")
-        self.text_encoder = CLIPTextModel.from_pretrained(model_key, subfolder="text_encoder").to(self.device)
-        self.unet = UNet2DConditionModel.from_pretrained(model_key, subfolder="unet").to(self.device)
+        # Create model
+        local_model_dir = "/local_data_2/urp25su_hanuiseok/sd"
+        self.vae = AutoencoderKL.from_pretrained(f"{local_model_dir}/vae").to(self.device)
+        self.tokenizer = CLIPTokenizer.from_pretrained(f"{local_model_dir}/tokenizer")
+        self.text_encoder = CLIPTextModel.from_pretrained(f"{local_model_dir}/text_encoder").to(self.device)
+        self.unet = UNet2DConditionModel.from_pretrained(f"{local_model_dir}/unet").to(self.device)
+
 
         if is_xformers_available():
             self.unet.enable_xformers_memory_efficient_attention()
