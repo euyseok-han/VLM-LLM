@@ -18,6 +18,34 @@ from pytorch3d.renderer import (
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 # 메시 파일 로딩
+# 렌더러 생성 함수
+def get_renderer_with_light(elev = 0, azim = 0):
+    dist = 5
+    R, T = look_at_view_transform(dist=dist, elev=elev, azim=azim, device=device)
+    cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
+    T_reshaped = T.unsqueeze(2)
+    R_transpose = R.transpose(1, 2)
+    # C = -torch.bmm(R_transpose, T_reshaped).squeeze(2)
+    C = (
+            camera_position_from_spherical_angles(
+                dist, elev, azim, degrees=True, device=device
+            )
+        )
+    lights = PointLights(device=device, location=C)
+
+    renderer = MeshRenderer(
+        rasterizer=MeshRasterizer(
+            cameras=cameras,
+            raster_settings=raster_settings
+        ),
+        shader=SoftPhongShader(
+            device=device,
+            cameras=cameras,
+            lights=lights
+        )
+    )
+    return renderer
+
 
 def render(data_dir):
     obj_filename = os.path.join(data_dir, "mesh.obj")
@@ -46,33 +74,7 @@ def render(data_dir):
             plt.imsave(save_path, image)
             if elev == 90:
                 break
-# 렌더러 생성 함수
-def get_renderer_with_light(elev = 0, azim = 0):
-    dist = 5
-    R, T = look_at_view_transform(dist=dist, elev=elev, azim=azim, device=device)
-    cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
-    T_reshaped = T.unsqueeze(2)
-    R_transpose = R.transpose(1, 2)
-    # C = -torch.bmm(R_transpose, T_reshaped).squeeze(2)
-    C = (
-            camera_position_from_spherical_angles(
-                dist, elev, azim, degrees=True, device=device
-            )
-        )
-    lights = PointLights(device=device, location=C)
 
-    renderer = MeshRenderer(
-        rasterizer=MeshRasterizer(
-            cameras=cameras,
-            raster_settings=raster_settings
-        ),
-        shader=SoftPhongShader(
-            device=device,
-            cameras=cameras,
-            lights=lights
-        )
-    )
-    return renderer
 
 
 
