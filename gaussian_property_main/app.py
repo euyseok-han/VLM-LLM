@@ -5,9 +5,9 @@ import numpy as np
 from PIL import Image
 from rembg import remove
 from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
-from utils.sam_utils import *
-from utils.vlm_utils import *
-from utils.vis_utils import *
+from gaussian_property_main.utils.sam_utils import *
+from gaussian_property_main.utils.vlm_utils import *
+from gaussian_property_main.utils.vis_utils import *
 import os
 import numpy as np
 import matplotlib as mpl

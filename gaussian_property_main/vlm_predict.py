@@ -1,6 +1,6 @@
 import os
 import argparse
-from utils.vlm_utils import get_image_files, Qwen, GPT4V
+from gaussian_property_main.utils.vlm_utils import get_image_files, Qwen, GPT4V
 
 
 def query_vlm(base_path, case_name, vlm_type = "qwen"):

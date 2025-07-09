@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 import matplotlib as mpl
 
-from utils.vis_utils import parse_txt_file, filter_and_process, \
+from gaussian_property_main.utils.vis_utils import parse_txt_file, filter_and_process, \
     filter_and_process, parse_material, make_legend, visualize_and_save_segmentation,cat_rgba
 
 def vis_material_seg(base_path, vis_seg_save_base):
