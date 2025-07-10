@@ -22,13 +22,13 @@ if __name__ == '__main__':
     args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
     # guidance model 불러오기
-    # guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
-    # guidance.eval()
-    # for p in guidance.parameters():
-    #     p.requires_grad = False
+    guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
+    guidance.eval()
+    for p in guidance.parameters():
+        p.requires_grad = False
 
     # # main 실행
-    # main(args, guidance)
+    main(args, guidance)
 
     # 2. Folder_organizer
     exp_name = time.strftime('%Y%m%d', time.localtime()) + '_' + args.exp_name
