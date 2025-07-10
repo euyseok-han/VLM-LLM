@@ -5,6 +5,7 @@ benchmark/
 datasets/
 cache/
 report/
+logs/
 outputs/
 submodules/
 external/
