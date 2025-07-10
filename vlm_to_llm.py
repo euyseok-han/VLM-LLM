@@ -9,24 +9,21 @@ from gaussian_property_main.vlm_predict import run_vlm
 if __name__ == '__main__':
 
     # 1. Paint_it 
-
-    # 필요한 설정 (args) 가져오기
     args = parse_args()
 
     # 직접 설정 추가 (필요 시)
-    args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
-    args.identity = "A chair with tools on it"
+    args.objaverse_id = "2f476299a2de4c1298122fec8ccfc2ef"
+    args.identity = ""
 
-    
     args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
-    # guidance model 불러오기
+    # 1-1. guidance model 불러오기
     guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
     guidance.eval()
     for p in guidance.parameters():
         p.requires_grad = False
 
-    # # main 실행
+    # 1-2. main 실행
     main(args, guidance)
 
     # 2. Folder_organizer

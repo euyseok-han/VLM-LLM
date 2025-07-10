@@ -1,3 +1,0 @@
-2d_output_dirs/final_front/gpt_input/01/00.png,body of a can, metal, 85-95, Shore D
-2d_output_dirs/final_front/gpt_input/01/01.png,body of a can, metal, 85-100, Shore D
-2d_output_dirs/final_front/gpt_input/01/02.png,rim of a can, metal, 85-100, Shore D

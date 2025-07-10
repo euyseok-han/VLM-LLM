@@ -5,7 +5,7 @@ benchmark/
 datasets/
 cache/
 report/
-
+2d_output/
 outputs/
 submodules/
 external/

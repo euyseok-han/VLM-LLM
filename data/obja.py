@@ -27,7 +27,7 @@ for uid, glb_path in local_paths.items():
         os.makedirs(export_dir, exist_ok=True)
         
         # GLB 로드
-        mesh = trimesh.load(glb_path, force='scene')
+        mesh = trimesh.load(glb_path, force='mesh')
         
         # OBJ로 내보내기
         obj_export_path = os.path.join(export_dir, "mesh.obj")
