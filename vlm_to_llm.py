@@ -14,10 +14,9 @@ if __name__ == '__main__':
     args = parse_args()
 
     # 직접 설정 추가 (필요 시)
-    # args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
-    # args.identity = "A chair with tools on it"
-    args.objaverse_id = "d3bfe628db1d47ec9501ee7b5ebce9e3"
-    args.identity = "A wooden building"
+    args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
+    args.identity = "A chair with tools on it"
+
     
     args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
