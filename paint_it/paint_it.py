@@ -280,9 +280,9 @@ def main(args, guidance):
             for idx in range(circle_n_view):
                 if idx == 0:
                     if elev == 0.0:
-                        torchvision.utils.save_image(final_obj_rgb[idx], os.path.join(output_dir, "final_front.png"))
+                        torchvision.utils.save_image(final_obj_rgb[idx], os.path.join(output_dir, "final_images", "final_front.png"))
                     else:
-                        torchvision.utils.save_image(final_obj_rgb[idx], os.path.join(output_dir, "final_top.png"))
+                        torchvision.utils.save_image(final_obj_rgb[idx], os.path.join(output_dir, "final_images", "final_top.png"))
                 if elev == 0.0:
                     torchvision.utils.save_image(vis_mesh_img[idx], os.path.join(output_dir, 'view_front', f'{idx:04}.png'))
                 else:
