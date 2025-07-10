@@ -271,7 +271,7 @@ def main(args, guidance):
             final_obj_rgb = final_buffers['shaded'][..., 0:3].permute(0, 3, 1, 2).contiguous()
             final_obj_ws = final_buffers['shaded'][..., 3].unsqueeze(1)  # [B, 1, H, W]
             vis_mesh_img = final_obj_rgb * final_obj_ws + (1 - final_obj_ws) * 1  # white bg, float32, [B, 3, H, W]
-
+            os.makedirs(os.path.join(output_dir, "final_images"), exist_ok=True)
             # # save final front body image
             if elev == 0.0:
                 os.makedirs(os.path.join(output_dir, 'view_front'), exist_ok=True)
