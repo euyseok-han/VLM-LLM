@@ -1,0 +1,2 @@
+./logs/20250710_chair_with_tools_on_it_85819b/final_images_dirs/final_front/gpt_input/01/00.png,seat of the chair, wood, 60-80, Shore D
+./logs/20250710_chair_with_tools_on_it_85819b/final_images_dirs/final_front/gpt_input/01/01.png,seat and backrest, wood, 60-80, Shore D
