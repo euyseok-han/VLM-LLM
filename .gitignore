@@ -7,7 +7,7 @@ cache/
 report/
 2d_output/
 outputs/
-submodules/
+
 external/
 *.pth
 *.pyc
