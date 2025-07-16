@@ -29,6 +29,5 @@ for scene in os.listdir(directory):
         'ns-process-data', 'images',
         '--data', input_dir,
         '--output-dir', output_dir,
-        "--colmap_gpu", "False",
         ], env=env)
 # ns-process-data images --data logs/20250709_chair_chair/view_front --output-dir logs/20250709_chair_chair/
