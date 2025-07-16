@@ -14,7 +14,7 @@ if __name__ == '__main__':
     
     args = get_args()
 
-    scenes_dir = args.data_dir
+    scenes_dir = args.data_dir # logs
     scenes = get_scenes_list(args)
 
     for scene in scenes: 
