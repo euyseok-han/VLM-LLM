@@ -5,7 +5,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='NeRF2Physics')
     
     # General arguments
-    parser.add_argument('--data_dir', type=str, default="./data/abo_500/",
+    parser.add_argument('--data_dir', type=str, default="/local_data_2/urp25su_hanuiseok/nerf", # "./data/abo_500/",
                         help='path to data (default: ./data/abo_500/)')
     parser.add_argument('--split', type=str, default="all",
                         help='dataset split, either train, val, train+val, test, or all (default: all)')

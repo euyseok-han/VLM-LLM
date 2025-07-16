@@ -20,12 +20,14 @@ for dir in os.listdir(directory):
         os.rename(old_path, new_path)
     
 
-for dir in os.listdir(directory):
-    input_dir = os.path.join(directory, dir, "view_front")
-    output_dir = os.path.join(directory, dir, "ns")
+for scene in os.listdir(directory):
+    input_dir = os.path.join(directory, scene, "view_front")
+    os.makedirs(os.path.join("/local_data_2/urp25su_hanuiseok/nerf", scene), exist_ok=True)
+    output_dir = os.path.join("/local_data_2/urp25su_hanuiseok/nerf", scene)
+
     subprocess.run([
         'ns-process-data', 'images',
         '--data', input_dir,
         '--output-dir', output_dir
         ], env=env)
-# ns-process-data images --data logs/20250709_chair_chair/view_front --output-dir logs/20250709_chair_chair/ns
+# ns-process-data images --data logs/20250709_chair_chair/view_front --output-dir logs/20250709_chair_chair/

@@ -14,12 +14,10 @@ if __name__ == '__main__':
     
     args = get_args()
 
-    scenes_dir = args.data_dir # logs
+    scenes_dir = args.data_dir # "/local_data_2/urp25su_hanuiseok/nerf"
     scenes = get_scenes_list(args)
-
     for scene in scenes: 
         base_dir = os.path.join(scenes_dir, scene, 'ns')
-
         # Calling ns-train
         result = subprocess.run([
             'ns-train', 'nerfacto',
