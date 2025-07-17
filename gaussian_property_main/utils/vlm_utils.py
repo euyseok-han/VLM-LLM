@@ -38,7 +38,7 @@ def Qwen(image_path, prompt):
 
 
 def GPT4V(image_path, prompt):
-    client = OpenAI(api_key="your_api_key")
+    client = OpenAI(api_key="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")
 
     # Function to encode the image
     def encode_image(image_path):
