@@ -43,6 +43,7 @@ if __name__ == '__main__':
             os.rename(old_path, new_path)
     # 2-2. preprocess_images  
     exp_name = time.strftime('%Y%m%d', time.localtime()) + '_' + args.exp_name
+    exp_name = "20250709_chair_chair"
     path_to_preprocess = os.path.join(directory, exp_name)
     path_to_preprocess = os.path.join(path_to_preprocess, "view_front")
     preprocessed_save_path = path_to_preprocess + "_dirs"
