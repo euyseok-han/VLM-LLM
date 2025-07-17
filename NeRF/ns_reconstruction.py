@@ -6,15 +6,16 @@ from arguments import get_args
 
 
 def move_files_to_folder(source_dir, target_dir):
-    for file in os.listdir(source_dir):
-        shutil.move(os.path.join(source_dir, file), os.path.join(target_dir, file))
+    try: 
+        for file in os.listdir(source_dir):
+            shutil.move(os.path.join(source_dir, file), os.path.join(target_dir, file))
+    except FileNotFoundError:
+        print(f"Source directory {source_dir} does not exist.")
 
-
-if __name__ == '__main__':
-    
+def main():
     args = get_args()
 
-    scenes_dir = args.data_dir # "/local_data_2/urp25su_hanuiseok/nerf"
+    scenes_dir = os.path.join(args.data_dir, 'scenes') # "/local_data_2/urp25su_hanuiseok/nerf/scenes"
     scenes = get_scenes_list(args)
     for scene in scenes: 
         base_dir = os.path.join(scenes_dir, scene, 'ns')
@@ -28,15 +29,15 @@ if __name__ == '__main__':
             '--experiment_name', scene,
             '--max_num_iterations', str(args.training_iters),
             '--pipeline.model.background-color', 'random',
-            '--pipeline.datamanager.camera-optimizer.mode', 'off',
+            # '--pipeline.datamanager.camera-optimizer.mode', 'off',
             '--pipeline.model.proposal-initial-sampler', 'uniform',
             '--pipeline.model.near-plane', str(args.near_plane),
             '--pipeline.model.far-plane', str(args.far_plane),
             '--steps-per-eval-image', '10000',
         ])
 
-        ns_dir = get_last_file_in_folder(os.path.join(base_dir, 'nerfacto'))
-
+        ns_dir = get_last_file_in_folder(os.path.join(base_dir, f'{scene}/nerfacto')) # nerfacto/date_time_recent
+        
         # Copying dataparser_transforms (contains scale)
         result = subprocess.run([
             'scp', '-r', 
@@ -54,15 +55,16 @@ if __name__ == '__main__':
             '--num-points', str(args.num_points),
             '--remove-outliers', 'True',
             '--normal-method', 'open3d',
-            '--use-bounding-box', 'True',
-            '--bounding-box-min', str(-half_bbox_size), str(-half_bbox_size), str(-half_bbox_size),
-            '--bounding-box-max', str(half_bbox_size), str(half_bbox_size), str(half_bbox_size),
+            # '--use-bounding-box', 'True',
+            # '--bounding-box-min', str(-half_bbox_size), str(-half_bbox_size), str(-half_bbox_size),
+            # '--bounding-box-max', str(half_bbox_size), str(half_bbox_size), str(half_bbox_size),
         ])
 
         # Calling ns-render 
         result = subprocess.run([
             'ns-render', 'dataset',
             '--load-config', os.path.join(ns_dir, 'config.yml'),
+            '--image-format', 'png',
             '--output-path', os.path.join(base_dir, 'renders'),
             '--rendered-output-names', 'raw-depth',
             '--split', 'train+test',
@@ -70,6 +72,9 @@ if __name__ == '__main__':
 
         # Collect all depths in one folder
         os.makedirs(os.path.join(base_dir, 'renders', 'depth'), exist_ok=True)
-        move_files_to_folder(os.path.join(base_dir, 'renders', 'test', 'raw-depth'), os.path.join(base_dir, 'renders', 'depth'))
         move_files_to_folder(os.path.join(base_dir, 'renders', 'train', 'raw-depth'), os.path.join(base_dir, 'renders', 'depth'))
+        move_files_to_folder(os.path.join(base_dir, 'renders', 'test', 'raw-depth'), os.path.join(base_dir, 'renders', 'depth'))
+
+if __name__ == '__main__':
+    main()
 

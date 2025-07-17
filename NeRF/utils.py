@@ -46,10 +46,11 @@ def parse_transforms_json(t_file, return_w2c=False, different_Ks=False):
 
     n_frames = len(transforms['frames'])
     c2ws = [np.array(transforms['frames'][i]['transform_matrix']) for i in range(n_frames)]
+    img_list = [transforms['frames'][i]['file_path'].split("/")[-1] for i in range(n_frames)]
     if return_w2c:
         w2cs = [np.linalg.inv(c2w) for c2w in c2ws]
-        return w2cs, K
-    return c2ws, K
+        return w2cs, K, img_list
+    return c2ws, K, img_list
 
 
 def parse_dataparser_transforms_json(dt_file):
@@ -81,7 +82,7 @@ def load_ns_point_cloud(pcd_file, dt_file, ds_size=0.01, viz=False):
     return pts
 
 
-def load_images(img_dir, bg_change=255, return_masks=False):
+def load_images(img_dir, bg_change=255, return_masks=False, img_list=None):
     img_files = os.listdir(img_dir)
     img_files.sort()
     imgs = []
@@ -89,12 +90,13 @@ def load_images(img_dir, bg_change=255, return_masks=False):
     for img_file in img_files:
         # load RGBA image
         img = np.array(Image.open(os.path.join(img_dir, img_file)))
-        if return_masks or bg_change is not None:
-            mask = img[:, :, 3] > 0
-            if bg_change is not None:
-                img[~mask] = bg_change
-            masks.append(mask)
-        imgs.append(img[:, :, :3])
+        if not img_list or img_file in img_list:
+            if return_masks or bg_change is not None:
+                mask = img[:, :, 3] > 0
+                if bg_change is not None:
+                    img[~mask] = bg_change
+                masks.append(mask)
+            imgs.append(img[:, :, :3])
         
     if return_masks:
         return imgs, masks
@@ -160,7 +162,7 @@ def get_scenes_list(args):
         else:
             scenes = splits[args.split]
     else:
-        scenes = sorted(os.listdir(args.data_dir))
+        scenes = sorted(os.listdir(os.path.join(args.data_dir, 'scenes')))
 
     if args.end_idx != -1:
         scenes = scenes[args.start_idx:args.end_idx]

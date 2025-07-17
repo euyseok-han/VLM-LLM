@@ -74,12 +74,11 @@ def process_scene(args, scene_dir, model, preprocess_fn):
     depth_dir = os.path.join(scene_dir, 'ns', 'renders', 'depth')
 
     pts = load_ns_point_cloud(pcd_file, dt_file, ds_size=args.feature_voxel_size)
-    w2cs, K = parse_transforms_json(t_file, return_w2c=True, different_Ks=args.different_Ks)
+    w2cs, K, img_list = parse_transforms_json(t_file, return_w2c=True, different_Ks=args.different_Ks)
     ns_transform, scale = parse_dataparser_transforms_json(dt_file)
-    imgs = load_images(img_dir)
+    imgs = load_images(img_dir, bg_change=None, img_list=img_list)
     depths = load_depths(depth_dir, Ks=None)
-
-    print('scene: %s, points: %d, scale: %.4f' % (scene_name, len(pts), scale))
+    print('scene: %s, points: %d, scale: %.4f' % (scene_name, len(pts), scale), 'starting feature extraction...')
 
     with torch.no_grad():
         occ_thr = args.occ_thr * scale
@@ -90,6 +89,7 @@ def process_scene(args, scene_dir, model, preprocess_fn):
         
     out_dir = os.path.join(scene_dir, 'features')
     os.makedirs(out_dir, exist_ok=True)
+    print('Saving features to %s' % out_dir)
     torch.save(patch_features, os.path.join(out_dir, 'patch_features_%s.pt' % args.feature_save_name))
     torch.save(is_visible, os.path.join(out_dir, 'is_visible_%s.pt' % args.feature_save_name))
     with open(os.path.join(out_dir, 'voxel_size_%s.json' % args.feature_save_name), 'w') as f:
@@ -97,17 +97,16 @@ def process_scene(args, scene_dir, model, preprocess_fn):
 
     return pts, patch_features, is_visible
     
-    
-if __name__ == '__main__':   
-
+def main():
     args = get_args()
-
     scenes_dir = os.path.join(args.data_dir, 'scenes')
     scenes = get_scenes_list(args)
 
     model, _, preprocess = open_clip.create_model_and_transforms(CLIP_BACKBONE, pretrained=CLIP_CHECKPOINT)
     model.to(args.device)
-
     for j, scene in enumerate(scenes):
         pts, patch_features, is_visible = process_scene(args, os.path.join(scenes_dir, scene), model, preprocess)
+
+if __name__ == '__main__':
+    main()
 
