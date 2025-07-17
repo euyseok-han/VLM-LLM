@@ -1,6 +1,6 @@
 import os
 import argparse
-from gaussian_property_main.utils.vlm_utils import get_image_files, Qwen, GPT4V, Qwen_json
+from gaussian_property_main.utils.vlm_utils import get_image_files, Qwen, GPT4V, Qwen_prev
 
 
 def query_vlm(base_path, case_name, vlm_type = "gpt4"):
@@ -52,7 +52,7 @@ def run_vlm(base_path, vlm_type):
     results_file_path = os.path.join(base_path, output_file)
     if os.path.exists(results_file_path):
         os.remove(results_file_path)
-        
+
     for case_name in all_cases:
         query_vlm(base_path, case_name, vlm_type=vlm_type)
 
