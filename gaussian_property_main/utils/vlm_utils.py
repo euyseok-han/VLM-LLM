@@ -6,7 +6,7 @@ from openai import OpenAI
 
 random.seed(123)  # Set random seed to 123
 
-def Qwen(image_path, prompt):
+def Qwen_prev(image_path, prompt):
     # Base64 encoding of the image
     def encode_image(image_path):
         with open(image_path, "rb") as image_file:
@@ -70,6 +70,46 @@ def GPT4V(image_path, prompt):
     )
 
     return response.choices[0]
+
+
+import requests
+import json
+def Qwen(image_path, prompt):
+    def encode_image(image_path):
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode("utf-8")
+
+    base64_image = encode_image(image_path)
+    response = requests.post(
+    url="https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json",
+    },
+    data=json.dumps({
+        "model": "qwen/qwen-2.5-72b-instruct",
+        "messages": [
+        {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt,
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        },
+                    },
+                ],
+            }
+        ],
+        
+    })
+    )
+    return response.json()['choices'][0]['message']['content']
+
 
 
 def get_image_files(directory):
