@@ -1,8 +1,8 @@
 import os
 import subprocess
-from NeRF.ns_reconstruction import main as ns_reconstruction
-from NeRF.feature_fusion import main as feature_fusion
-from NeRF.material_proposal import main as material_proposal
+from ns_reconstruction import main as ns_reconstruction
+from feature_fusion import main as feature_fusion
+from material_proposal import main as material_proposal
 # 변경하고자 하는 디렉토리 경로
 directory = "logs/"
 env = os.environ.copy()
