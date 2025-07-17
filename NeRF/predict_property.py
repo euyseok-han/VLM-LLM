@@ -9,8 +9,8 @@ import matplotlib as mpl
 from feature_fusion import CLIP_BACKBONE, CLIP_CHECKPOINT
 from gpt_inference import parse_material_list, parse_material_hardness
 from carving import get_carved_pts
-from .nerf_util import load_ns_point_cloud, parse_dataparser_transforms_json, get_last_file_in_folder, get_scenes_list
-from .arguments import get_args
+from nerf_util import load_ns_point_cloud, parse_dataparser_transforms_json, get_last_file_in_folder, get_scenes_list
+from arguments import get_args
 
 
 @torch.no_grad()
@@ -28,14 +28,37 @@ def get_text_features(texts, clip_model, clip_tokenizer, prefix='', suffix='', d
 
 @torch.no_grad()
 def get_agg_patch_features(patch_features, is_visible):
-    """Get aggregated patch features by averaging over visible patches."""
-    n_visible = is_visible.sum(0)
+    """
+    patch_features: (T, N, D)
+    is_visible: (T, N) boolean
+    """
+    T, N, D = patch_features.shape
+
+    # Flatten to (T*N, D)
+    patch_features_flat = patch_features.view(-1, D)
+    is_visible_flat = is_visible.view(-1)
+
+    # Create index map
+    batch_indices = torch.arange(N, device=patch_features.device).repeat(T)  # (T*N,)
+    batch_indices = batch_indices[is_visible_flat]  # Only visible ones
+
+    visible_feats = patch_features_flat[is_visible_flat]  # (num_visible, D)
+    
+    # Use scatter_add to accumulate features per instance
+    sum_feats = torch.zeros(N, D, device=patch_features.device)
+    sum_feats = sum_feats.index_add(0, batch_indices, visible_feats)
+
+    # Count number of visible patches per instance
+    n_visible = is_visible.sum(0)  # (N,)
     is_valid = n_visible > 0
 
-    visible_patch_features = patch_features * is_visible.unsqueeze(-1)
-    avg_visible_patch_features = visible_patch_features.sum(0) / n_visible.unsqueeze(-1)
-    avg_visible_patch_features = avg_visible_patch_features / avg_visible_patch_features.norm(dim=1, keepdim=True)
-    return avg_visible_patch_features[is_valid], is_valid
+    avg_feats = torch.zeros_like(sum_feats)
+    avg_feats[is_valid] = sum_feats[is_valid] / n_visible[is_valid].unsqueeze(-1)
+
+    # Normalize
+    avg_feats[is_valid] = avg_feats[is_valid] / avg_feats[is_valid].norm(dim=1, keepdim=True)
+
+    return avg_feats[is_valid], is_valid
 
 
 @torch.no_grad()
@@ -80,9 +103,11 @@ def predict_physical_property_integral(args, scene_dir, clip_model, clip_tokeniz
     mat_val_list = info['candidate_materials_%s' % args.property_name]
     mat_names, mat_vals = parse_material_list(mat_val_list)
     mat_vals = torch.Tensor(mat_vals).to(args.device)
-    mat_tn_list = info['thickness']
-    mat_names, mat_tns = parse_material_list(mat_tn_list)
-    mat_tns = torch.Tensor(mat_tns).to(args.device) / 100  # cm to m
+    mat_tn_list = info.get('thickness', [])
+    mat_tns = 1
+    if mat_tn_list:
+        mat_names, mat_tns = parse_material_list(mat_tn_list)
+        mat_tns = torch.Tensor(mat_tns).to(args.device) / 100  # cm to m
 
     # predictions on source points
     text_features = get_text_features(mat_names, clip_model, clip_tokenizer, device=args.device)

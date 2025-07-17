@@ -8,11 +8,11 @@ Given a text file where each line is formatted like:
 <file path>,<object name>,<material>,<material property>,
 extract and analyze the material and the material property, where the property refers to the density of the material (e.g., metal, 7.85 g/cm³).
 
-You must identify the most frequently occurring materials (up to 10) and their corresponding density ranges.
+You must identify the most frequently occurring materials (up to 5) and their corresponding density ranges.
 
 You must provide your answer as a list of (material: density) pairs, each separated by a semicolon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look exactly like:
 (material 1: low-high g/cm³);(material 2: low-high g/cm³);(material 3: low-high g/cm³);(material 4: low-high g/cm³);(material 5: low-high g/cm³)
-If there are fewer than 10 distinct materials, you may provide fewer than 10 pairs.
+If there are fewer than 5 distinct materials, you may provide fewer than 5 pairs.
 
 If a material appears with multiple density values, determine the lowest and highest values and present them as a range (e.g., 2.30–2.70 g/cm³). Round values to two decimal places. Use consistent units (g/cm³).
 Do not include any other text in your answer. Do not include unnecessary words besides the material in the material name. 
@@ -52,11 +52,27 @@ You must provide your answer as a list of 3 (material: friction coefficient) pai
 Try to provide as narrow of a range as possible for the friction coefficient.
 """
 
-PRED_THICKNESS_SYS_MSG = """You will be provided with captions that each describe an image of an object, along with a set of possible materials used to make the object. For each material, estimate the thickness (in cm) of that material in the object. You may provide a range of values for the thickness instead of a single value.
+PRED_THICKNESS_SYS_MSG = """
+You are given a text file in which each line follows the format:
+<file path>,<object name>,<material>,<material property>,
 
-Format Requirement:
-You must provide your answer as a list of 5 (material: thickness) pairs, each separated by a semi-colon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look like:
-(material 1: low-high cm);(material 2: low-high cm);(material 3: low-high cm);(material 4: low-high cm);(material 5: low-high cm)
+Your task is to extract the material (the third item in each line) and infer a plausible thickness range (in centimeters) based solely on the material name — ignoring the material property field.
+
+Use your knowledge of typical material applications and real-world usage to estimate a reasonable thickness range for each unique material.
+
+Output Format:
+Return a list of 5 (material: thickness) pairs.
+Each thickness must be expressed as a range (e.g., "0.1-0.5 cm").
+Each pair should be enclosed in parentheses and separated by a semicolon.
+
+Important:
+
+    Do not use the <material property> field in your analysis.
+
+    Do not include any extra text before or after the list.
+
+    The output must follow this format exactly:
+    (material 1: low-high cm);(material 2: low-high cm);...;(material 5: low-high cm)
 """
 
 PRED_THICKNESS_EXAMPLE_INPUT_1 = 'Caption: "a lamp with a white shade" Materials: "fabric, plastic, metal, ceramic, glass"'
@@ -134,27 +150,60 @@ def gpt_thickness(caption, candidate_materials, mode='list', model_name='gpt-3.5
     mat_names_str = ', '.join(mat_names)
     user_msg = 'Caption: "%s" Materials: "%s"' % (caption, mat_names_str)
 
-    response = openai.ChatCompletion.create(
-      model=model_name,
-        messages=[
-            {"role": "system", "content": PRED_THICKNESS_SYS_MSG},
-            {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_1},
-            {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_1},
-            {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_2},
-            {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_2},
-            {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_3},
-            {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_3},
-            {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_4},
-            {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_4},
-            {"role": "user", "content": user_msg},
+    response = requests.post(
+    url="https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json",
+    },
+    data=json.dumps({
+        "model": "qwen/qwen-2.5-72b-instruct",
+        "messages": [
+        {
+                "role": "system",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": PRED_THICKNESS_SYS_MSG,
+                    },
+                ],
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": user_msg,
+                },
+            ],
+        }
         ],
-        request_timeout=20,
-        seed=seed,
+        
+    })
     )
-    return response['choices'][0]['message']['content']
+
+    # response = openai.ChatCompletion.create(
+    #   model=model_name,
+    #     messages=[
+    #         {"role": "system", "content": PRED_THICKNESS_SYS_MSG},
+    #         # {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_1},
+    #         # {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_1},
+    #         # {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_2},
+    #         # {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_2},
+    #         # {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_3},
+    #         # {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_3},
+    #         # {"role": "user", "content": PRED_THICKNESS_EXAMPLE_INPUT_4},
+    #         # {"role": "assistant", "content": PRED_THICKNESS_EXAMPLE_OUTPUT_4},
+    #         {"role": "user", "content": user_msg},
+    #     ],
+    #     request_timeout=20,
+    #     seed=seed,
+    # )
+    print(response)
+    return response.json()['choices'][0]['message']['content']
 
 
-def parse_material_list(matlist, max_n=10):
+def parse_material_list(matlist, max_n=5):
     #matlist: (material 1: low-high g/cm³);(material 2: low-high g/cm³);...
     elems = matlist.split(';')
     if len(elems) > max_n:
@@ -200,7 +249,7 @@ def parse_material_list(matlist, max_n=10):
     return mat_names, mat_vals
 
 
-def parse_material_hardness(matlist, max_n=10):
+def parse_material_hardness(matlist, max_n=5):
     elems = matlist.split(';')
     if len(elems) > max_n:
         print('too many materials %s' % matlist)
@@ -293,7 +342,7 @@ def gpt4v_candidate_materials(image_path, property_name='density', seed=100):
     return response['choices'][0]['message']['content']
 
 
-def parse_material_json(matjson, max_n=10, field_name='mass density (kg/m^3)'):
+def parse_material_json(matjson, max_n=5, field_name='mass density (kg/m^3)'):
     desc_and_mats = json.loads(matjson)
     if 'description' not in desc_and_mats or 'materials' not in desc_and_mats:
         print('bad format %s' % matjson)

@@ -5,7 +5,7 @@ import json
 import open3d as o3d
 import gzip
 from PIL import Image
-
+import torch
 
 def project_3d_to_2d(pts, w2c, K, return_dists=False):
     """Project 3D points to 2D (nerfstudio format)."""
@@ -92,6 +92,12 @@ def load_images(img_dir, bg_change=255, return_masks=False, img_list=None):
         img = np.array(Image.open(os.path.join(img_dir, img_file)))
         if not img_list or img_file in img_list:
             if return_masks or bg_change is not None:
+                if isinstance(img, np.ndarray):
+                    img = torch.from_numpy(img)
+                if img.shape[2] == 3:
+                    H, W = img.shape[:2]
+                    alpha = torch.full((H, W, 1), 255, dtype=img.dtype, device=img.device)  # or 1.0 if float
+                    img = torch.cat([img, alpha], dim=2)
                 mask = img[:, :, 3] > 0
                 if bg_change is not None:
                     img[~mask] = bg_change

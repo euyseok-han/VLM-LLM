@@ -11,8 +11,8 @@ from sklearn.decomposition import PCA
 
 from feature_fusion import CLIP_BACKBONE, CLIP_CHECKPOINT
 from predict_property import predict_physical_property_query
-from .nerf_util import parse_transforms_json, load_ns_point_cloud, load_images
-from .arguments import get_args
+from nerf_util import parse_transforms_json, load_ns_point_cloud, load_images
+from arguments import get_args
 
 
 def features_to_colors(features):
@@ -152,7 +152,7 @@ if __name__ == '__main__':
                  savefile=os.path.join(out_dir, '%s_legend.png' % args.viz_save_name), show=args.show)
     
     # camera for rendering
-    w2cs, K = parse_transforms_json(t_file, return_w2c=True)
+    w2cs, K, img_list = parse_transforms_json(t_file, return_w2c=True)
     view_idx = 0
     w2c = w2cs[view_idx]
     w2c[[1, 2]] *= -1  # convert from nerfstudio to open3d format

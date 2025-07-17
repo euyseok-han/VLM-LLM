@@ -1,8 +1,8 @@
 import os
 import subprocess
 import shutil
-from .nerf_util import get_last_file_in_folder, get_scenes_list
-from .arguments import get_args
+from nerf_util import get_last_file_in_folder, get_scenes_list
+from arguments import get_args
 
 
 def move_files_to_folder(source_dir, target_dir):

@@ -2,6 +2,7 @@ import os
 import subprocess
 from NeRF.ns_reconstruction import main as ns_reconstruction
 from NeRF.feature_fusion import main as feature_fusion
+from NeRF.material_proposal import main as material_proposal
 # 변경하고자 하는 디렉토리 경로
 directory = "logs/"
 env = os.environ.copy()
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     ns_reconstruction()
     print("NeRF reconstruction complete. Starting feature fusion...")
     feature_fusion()
-
+    material_proposal()
     # 디렉토리 내 모든 파일 순회
     
     # ns-process-data images --data logs/20250709_chair_chair/view_front --output-dir logs/20250709_chair_chair/

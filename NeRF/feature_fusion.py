@@ -5,8 +5,8 @@ import torch
 import open_clip
 from PIL import Image
 
-from .nerf_util import *
-from .arguments import get_args
+from nerf_util import *
+from arguments import get_args
 
 
 CLIP_BACKBONE = 'ViT-B-16'

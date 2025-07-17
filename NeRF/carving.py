@@ -4,7 +4,7 @@ import open3d as o3d
 import time
 import torch
 from PIL import Image
-from .nerf_util import *
+from nerf_util import *
 
 
 def get_bounding_box(pts, percentile=1.0, buffer=0.1):
@@ -144,7 +144,7 @@ def get_carved_pts(scene_dir, grid_cell_size_ns=1/512, dist_thr_ns=0.01, verbose
     depth_dir = os.path.join(scene_dir, 'ns', 'renders', 'depth')
 
     pts = load_ns_point_cloud(pcd_file, dt_file)
-    w2cs, K = parse_transforms_json(t_file, return_w2c=True)
+    w2cs, K, img_list = parse_transforms_json(t_file, return_w2c=True)
     ns_transform, scale = parse_dataparser_transforms_json(dt_file)
     imgs, masks = load_images(img_dir, return_masks=True)
     depths = load_depths(depth_dir, Ks=None)

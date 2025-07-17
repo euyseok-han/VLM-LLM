@@ -61,12 +61,12 @@ def get_args():
                         help='name of saved caption to load (default: info_new)')
     parser.add_argument('--property_name', type=str, default="density",
                         help='property to predict (default: density)')
-    parser.add_argument('--include_thickness', type=int, default=0,
-                        help='whether to also predict thickness (default: 0)')
+    parser.add_argument('--include_thickness', type=int, default=1,
+                        help='whether to also predict thickness (default: 1)')
     parser.add_argument('--gpt_model_name', type=str, default="gpt-3.5-turbo",
                         help='GPT model name (default: gpt-3.5-turbo)')
-    parser.add_argument('--mats_save_name', type=str, default="info_new",
-                        help='candidate materials save name (default: info_new)')
+    parser.add_argument('--mats_save_name', type=str, default="info",
+                        help='candidate materials save name (default: info)')
     
     # Physical property prediction (uses property_name argument from above)
     parser.add_argument('--mats_load_name', type=str, default="info",

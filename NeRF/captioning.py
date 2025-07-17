@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import torch
 from transformers import AutoProcessor, Blip2ForConditionalGeneration
 
-from .nerf_util import load_images, get_scenes_list
-from .arguments import get_args
+from nerf_util import load_images, get_scenes_list
+from arguments import get_args
 
 
 CAPTIONING_PROMPT = "Question: Give a detailed description of the object. Answer:"

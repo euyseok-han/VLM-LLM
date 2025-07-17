@@ -8,8 +8,8 @@ from PIL import Image
 
 from gpt_inference import gpt_candidate_materials, gpt_thickness, parse_material_list, \
     parse_material_hardness, gpt4v_candidate_materials, parse_material_json
-from .nerf_util import load_images, get_scenes_list
-from .arguments import get_args
+from nerf_util import load_images, get_scenes_list
+from arguments import get_args
 from my_api_key import OPENAI_API_KEY
 
 BASE_SEED = 100
@@ -54,6 +54,8 @@ def predict_candidate_materials(args, scene_dir, show=False):
     info = {}
     with open(args.verdict_txt, 'r', encoding='utf-8') as f:
         caption = f.read()
+    info['caption'] = caption
+    info['thickness'] = None
     print("#"*10)
     print('caption:', caption)
     print("#"*10)
@@ -150,6 +152,20 @@ def predict_thickness(args, scene_dir, mode='list', show=False):
         json.dump(info, f, indent=4)
 
     return info
+
+def main():
+    args = get_args()
+
+    scenes_dir = os.path.join(args.data_dir, 'scenes')
+    scenes = get_scenes_list(args)
+
+    openai.api_key = OPENAI_API_KEY
+
+    for j, scene in enumerate(scenes):
+        args.verdict_txt = f"logs/{scene}/view_front_dirs/verdict.txt"
+        mats_info = predict_candidate_materials(args, os.path.join(scenes_dir, scene))
+        if args.include_thickness:
+            mats_info = predict_thickness(args, os.path.join(scenes_dir, scene))
 
 
 if __name__ == '__main__':
