@@ -42,10 +42,10 @@ if __name__ == '__main__':
     #         # 이름 변경
     #         os.rename(old_path, new_path)
     # # 2-2. preprocess_images  
-    # exp_name = time.strftime('%Y%m%d', time.localtime()) + '_' + args.exp_name
-    # path_to_preprocess = os.path.join(directory, exp_name)
-    # path_to_preprocess = os.path.join(path_to_preprocess, "view_front")
-    # preprocessed_save_path = path_to_preprocess + "_dirs"
+    exp_name = time.strftime('%Y%m%d', time.localtime()) + '_' + args.exp_name
+    path_to_preprocess = os.path.join(directory, exp_name)
+    path_to_preprocess = os.path.join(path_to_preprocess, "view_front")
+    preprocessed_save_path = path_to_preprocess + "_dirs"
     # process_images(path_to_preprocess, True)
 
     # # 3. Sam_preprocess
