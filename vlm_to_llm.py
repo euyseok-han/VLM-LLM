@@ -8,12 +8,12 @@ from gaussian_property_main.vlm_predict import run_vlm
 
 if __name__ == '__main__':
 
-    # # 1. Paint_it 
-    # args = parse_args()
+    # 1. Paint_it 
+    args = parse_args()
 
-    # # 직접 설정 추가 (필요 시)
-    # args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
-    # args.identity = ""
+    # 직접 설정 추가 (필요 시)
+    args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
+    args.identity = ""
 
     # args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     # # 2. Folder_organizer
     # # 2-1. move images from view_top to view_front
-    # directory = "logs/"
+    directory = "logs/"
     # for dir in os.listdir(directory):
     #     for filename in os.listdir(os.path.join(directory, dir, "view_top")):
     #         if filename.endswith(".png"):
