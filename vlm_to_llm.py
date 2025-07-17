@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # 직접 설정 추가 (필요 시)
     args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
-    args.identity = ""
+    args.identity = "a wooden chair"
 
     args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
