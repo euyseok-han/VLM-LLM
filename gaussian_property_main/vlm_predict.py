@@ -24,10 +24,9 @@ def query_vlm(base_path, case_name, vlm_type = "qwen"):
     output_file = 'verdict.txt'
     results_file_path = os.path.join(base_path, output_file)
     # results_file_path = os.path.join(base_path, case_name, output_file)
-    case_msg = ""
     # os.makedirs(os.path.dirname(results_file_path), exist_ok=True)
 
-    with open(results_file_path, 'w') as file:
+    with open(results_file_path, 'a') as file:
         for image_file in image_files:
             try:
                 if vlm_type == 'qwen':
@@ -35,11 +34,12 @@ def query_vlm(base_path, case_name, vlm_type = "qwen"):
                 else:
                     message = str(GPT4V(image_file, prompt))
             except KeyError as e:
+                print(f"KeyError: {e} for image {image_file}")
                 message = "error,-1"
             except Exception as e:
+                print(f"Exception: {e} for image {image_file}")
                 message = "error,-1"
             write_msg = image_file + "," + message
-            case_msg += case_msg
             file.write(f"{write_msg}\n")
             file.flush()
 
