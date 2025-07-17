@@ -11,8 +11,8 @@ from sklearn.decomposition import PCA
 
 from feature_fusion import CLIP_BACKBONE, CLIP_CHECKPOINT
 from predict_property import predict_physical_property_query
-from utils import parse_transforms_json, load_ns_point_cloud, load_images
-from arguments import get_args
+from .nerf_util import parse_transforms_json, load_ns_point_cloud, load_images
+from .arguments import get_args
 
 
 def features_to_colors(features):

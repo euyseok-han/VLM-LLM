@@ -9,8 +9,8 @@ import matplotlib as mpl
 from feature_fusion import CLIP_BACKBONE, CLIP_CHECKPOINT
 from gpt_inference import parse_material_list, parse_material_hardness
 from carving import get_carved_pts
-from utils import load_ns_point_cloud, parse_dataparser_transforms_json, get_last_file_in_folder, get_scenes_list
-from arguments import get_args
+from .nerf_util import load_ns_point_cloud, parse_dataparser_transforms_json, get_last_file_in_folder, get_scenes_list
+from .arguments import get_args
 
 
 @torch.no_grad()
@@ -58,6 +58,7 @@ def get_interpolated_values(source_pts, source_vals, inner_pts, batch_size=2048,
 @torch.no_grad()
 def predict_physical_property_integral(args, scene_dir, clip_model, clip_tokenizer):
     """Predict the volume integral of a physical property (e.g. for mass). Returns a [low, high] range."""
+    # scene_dir's example: logs/20250710_chair_with_tools_on_it_85819b (no trailing slash)
 
     scene_name = os.path.basename(scene_dir)
     pcd_file = os.path.join(scene_dir, 'ns', 'point_cloud.ply')
@@ -202,6 +203,7 @@ def predict_physical_property_query(args, query_pts, scene_dir, clip_model, clip
     if query_pts == 'grid':
         query_pts = load_ns_point_cloud(pcd_file, dt_file, ds_size=args.sample_voxel_size)
         query_pts = torch.Tensor(query_pts).to(args.device)
+        
     query_pred_probs = get_interpolated_values(source_pts, source_pred_probs, query_pts, batch_size=2048, k=1)
     query_pred_vals = query_pred_probs @ mat_vals
 
