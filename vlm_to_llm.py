@@ -54,4 +54,4 @@ if __name__ == '__main__':
     # save_gpt_input(preprocessed_save_path)
 
     # 4. vlm_predict
-    run_vlm(preprocessed_save_path, vlm_type="qwen")
+    run_vlm(preprocessed_save_path, vlm_type="gpt4")
