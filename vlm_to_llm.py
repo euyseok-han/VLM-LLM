@@ -15,7 +15,7 @@ if __name__ == '__main__':
     args.objaverse_id = "85819bbcdfee44f8b6f525eb89dd19bd"
     args.identity = ""
 
-    # args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
+    args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
     # # 1-1. guidance model 불러오기
     # guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
