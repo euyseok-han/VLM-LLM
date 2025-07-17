@@ -7,7 +7,7 @@ def query_vlm(base_path, case_name, vlm_type = "qwen"):
     input_image_path = os.path.join(base_path, case_name, "gpt_input")
     image_files = get_image_files(input_image_path)
 
-    material_list = "wood, metal, plastic, glass, fabric, foam, food, ceramic, paper, leather"
+    material_list = "wood, metal, plastic, glass, fabric, foam, food, ceramic, paper, leather, aluminum, brass, bronze, copper, steel, stainless steel, iron, cast iron, titanium, zinc, lead, gold, silver, platinum, nickel, chrome, magnesium, tin, carbon fiber, fiberglass, acrylic, polyethylene, polypropylene, polystyrene, polycarbonate, polyvinyl chloride, nylon, rubber, silicone, latex, plywood, MDF, particle board, cork, bamboo, concrete, cement, asphalt, brick, clay, porcelain, terracotta, marble, granite, limestone, sandstone, quartz, tempered glass, frosted glass, mirror, cardboard, suede, denim, cotton, wool, silk, linen, polyester, felt, velvet, mesh, canvas, fur, straw, jute, carbon, graphite, resin, wax, ice, snow, sand, soil, mud, chalk, plaster, gypsum, sponge, tar, vinyl, PVC, Teflon, Kevlar, quartzite, basalt, lava rock, obsidian, bone, horn, shell, pearl"
     material_list = material_list.split(", ")
     material_library = "{" + ", ".join(material_list) + "}"
 
@@ -21,9 +21,10 @@ def query_vlm(base_path, case_name, vlm_type = "qwen"):
     The material type must be chosen from the above common material library. Make sure to use Shore A or Shore D hardness, not Mohs hardness."""
 
     output_file = f'{case_name}.txt'
-    results_file_path = os.path.join(base_path, case_name, output_file)
+    results_file_path = os.path.join(base_path, output_file)
+    # results_file_path = os.path.join(base_path, case_name, output_file)
     case_msg = ""
-    os.makedirs(os.path.dirname(results_file_path), exist_ok=True)
+    # os.makedirs(os.path.dirname(results_file_path), exist_ok=True)
 
     with open(results_file_path, 'w') as file:
         for image_file in image_files:
