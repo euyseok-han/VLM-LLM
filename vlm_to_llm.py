@@ -18,13 +18,13 @@ if __name__ == '__main__':
     args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
     # 1-1. guidance model 불러오기
-    # guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
-    # guidance.eval()
-    # for p in guidance.parameters():
-    #     p.requires_grad = False
+    guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
+    guidance.eval()
+    for p in guidance.parameters():
+        p.requires_grad = False
 
-    # # 1-2. main 실행
-    # main(args, guidance)
+    # 1-2. main 실행
+    main(args, guidance)
 
     # 2. Folder_organizer
     # 2-1. move images from view_top to view_front

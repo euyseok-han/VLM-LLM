@@ -8,11 +8,11 @@ Given a text file where each line is formatted like:
 <file path>,<object name>,<material>,<material property>,
 extract and analyze the material and the material property, where the property refers to the density of the material (e.g., metal, 7.85 g/cm³).
 
-You must identify the most frequently occurring materials (up to 5) and their corresponding density ranges.
+You must identify the most frequently occurring materials (up to 10) and their corresponding density ranges.
 
 You must provide your answer as a list of (material: density) pairs, each separated by a semicolon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look exactly like:
 (material 1: low-high g/cm³);(material 2: low-high g/cm³);(material 3: low-high g/cm³);(material 4: low-high g/cm³);(material 5: low-high g/cm³)
-If there are fewer than 5 distinct materials, you may provide fewer than 5 pairs.
+If there are fewer than 10 distinct materials, you may provide fewer than 10 pairs.
 
 If a material appears with multiple density values, determine the lowest and highest values and present them as a range (e.g., 2.30–2.70 g/cm³). Round values to two decimal places. Use consistent units (g/cm³).
 Do not include any other text in your answer. Do not include unnecessary words besides the material in the material name. 
@@ -99,14 +99,23 @@ def gpt_candidate_materials(caption, property_name='density', model_name='gpt-3.
         "model": "qwen/qwen-2.5-72b-instruct",
         "messages": [
         {
-                "role": "user",
+                "role": "system",
                 "content": [
                     {
                         "type": "text",
                         "text": sys_msg,
                     },
                 ],
-            }
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": caption,
+                },
+            ],
+        }
         ],
         
     })
@@ -145,7 +154,8 @@ def gpt_thickness(caption, candidate_materials, mode='list', model_name='gpt-3.5
     return response['choices'][0]['message']['content']
 
 
-def parse_material_list(matlist, max_n=5):
+def parse_material_list(matlist, max_n=10):
+    #matlist: (material 1: low-high g/cm³);(material 2: low-high g/cm³);...
     elems = matlist.split(';')
     if len(elems) > max_n:
         print('too many materials %s' % matlist)
@@ -190,7 +200,7 @@ def parse_material_list(matlist, max_n=5):
     return mat_names, mat_vals
 
 
-def parse_material_hardness(matlist, max_n=5):
+def parse_material_hardness(matlist, max_n=10):
     elems = matlist.split(';')
     if len(elems) > max_n:
         print('too many materials %s' % matlist)
@@ -283,7 +293,7 @@ def gpt4v_candidate_materials(image_path, property_name='density', seed=100):
     return response['choices'][0]['message']['content']
 
 
-def parse_material_json(matjson, max_n=5, field_name='mass density (kg/m^3)'):
+def parse_material_json(matjson, max_n=10, field_name='mass density (kg/m^3)'):
     desc_and_mats = json.loads(matjson)
     if 'description' not in desc_and_mats or 'materials' not in desc_and_mats:
         print('bad format %s' % matjson)

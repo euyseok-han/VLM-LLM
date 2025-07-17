@@ -1,6 +1,0 @@
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/02.png,staircase section, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/00.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/05.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/01.png,metal frame of a staircase, metal, hardness 80-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/03.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_top/gpt_input/01/04.png,curtain, fabric, 20-40, Shore A

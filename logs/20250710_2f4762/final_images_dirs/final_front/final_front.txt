@@ -1,8 +1,0 @@
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/02.png,error,-1
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/00.png,staircase platform, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/05.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/07.png,rail, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/01.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/03.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/06.png,staircase railing, metal, 85-100, Shore D
-./logs/20250710_2f4762/final_images_dirs/final_front/gpt_input/01/04.png,staircase platform, metal, 85-100, Shore D
