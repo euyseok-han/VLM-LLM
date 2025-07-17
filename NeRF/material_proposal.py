@@ -8,13 +8,11 @@ from PIL import Image
 
 from gpt_inference import gpt_candidate_materials, gpt_thickness, parse_material_list, \
     parse_material_hardness, gpt4v_candidate_materials, parse_material_json
-from utils import load_images, get_scenes_list
-from arguments import get_args
+from .nerf_util import load_images, get_scenes_list
+from .arguments import get_args
 from my_api_key import OPENAI_API_KEY
 
-
 BASE_SEED = 100
-
 
 def gpt_wrapper(gpt_fn, parse_fn, max_tries=10, sleep_time=3):
     """Wrap gpt_fn with error handling and retrying."""
@@ -51,16 +49,19 @@ def show_img_to_caption(scene_dir, idx_to_caption):
 
 def predict_candidate_materials(args, scene_dir, show=False):
     # load caption info
-    with open(os.path.join(scene_dir, '%s.json' % args.caption_load_name), 'r') as f:
-        info = json.load(f)
-    
-    caption = info['caption']
+    # with open(os.path.join(scene_dir, '%s.json' % args.caption_load_name), 'r') as f:
+    #     info = json.load(f)
+    info = {}
+    with open(args.verdict_txt, 'r', encoding='utf-8') as f:
+        caption = f.read()
+    print("#"*10)
+    print('caption:', caption)
+    print("#"*10)
 
     gpt_fn = lambda seed: gpt_candidate_materials(caption, property_name=args.property_name, 
                                                   model_name=args.gpt_model_name, seed=seed)
     parse_fn = parse_material_hardness if args.property_name == 'hardness' else parse_material_list
     candidate_materials = gpt_wrapper(gpt_fn, parse_fn)
-
     info['candidate_materials_%s' % args.property_name] = candidate_materials
     
     print('-' * 50)
@@ -77,6 +78,9 @@ def predict_candidate_materials(args, scene_dir, show=False):
         json.dump(info, f, indent=4)
 
     return info
+
+
+
 
 
 def predict_object_info_gpt4v(args, scene_dir, show=False):
@@ -157,7 +161,8 @@ if __name__ == '__main__':
 
     openai.api_key = OPENAI_API_KEY
 
-    for j, scene in enumerate(scenes): 
+    for j, scene in enumerate(scenes):
+        args.verdict_txt = f"logs/{scene}/view_front_dirs/verdict.txt"
         mats_info = predict_candidate_materials(args, os.path.join(scenes_dir, scene))
         if args.include_thickness:
             mats_info = predict_thickness(args, os.path.join(scenes_dir, scene))

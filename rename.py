@@ -21,8 +21,11 @@ def main():
             ], env=env)
         
 if __name__ == "__main__":
+    print("Starting ns-process-data...")
     main()
+    print("Processing complete. Starting NeRF reconstruction and feature fusion...")
     ns_reconstruction()
+    print("NeRF reconstruction complete. Starting feature fusion...")
     feature_fusion()
 
     # 디렉토리 내 모든 파일 순회

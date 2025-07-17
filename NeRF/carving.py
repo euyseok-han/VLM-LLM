@@ -4,7 +4,7 @@ import open3d as o3d
 import time
 import torch
 from PIL import Image
-from utils import *
+from .nerf_util import *
 
 
 def get_bounding_box(pts, percentile=1.0, buffer=0.1):

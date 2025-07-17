@@ -10,7 +10,7 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
     material_list = "wood, metal, plastic, glass, fabric, foam, food, ceramic, paper, leather, aluminum, brass, bronze, copper, steel, stainless steel, iron, cast iron, titanium, zinc, lead, gold, silver, platinum, nickel, chrome, magnesium, tin, carbon fiber, fiberglass, acrylic, polyethylene, polypropylene, polystyrene, polycarbonate, polyvinyl chloride, nylon, rubber, silicone, latex, plywood, MDF, particle board, cork, bamboo, concrete, cement, asphalt, brick, clay, porcelain, terracotta, marble, granite, limestone, sandstone, quartz, tempered glass, frosted glass, mirror, cardboard, suede, denim, cotton, wool, silk, linen, polyester, felt, velvet, mesh, canvas, fur, straw, jute, carbon, graphite, resin, wax, ice, snow, sand, soil, mud, chalk, plaster, gypsum, sponge, tar, vinyl, PVC, Teflon, Kevlar, quartzite, basalt, lava rock, obsidian, bone, horn, shell, pearl"
     material_list = material_list.split(", ")
     material_library = "{" + ", ".join(material_list) + "}"
-    material_property = "density"
+    material_property = "density(g/cm^3)"
     prompt = f"""Provided a picture. The left image is the original picture of the object (Original Image), and the middle image is a partial segmentation diagram (Mask Overlay), mask is in red. The right image is a partial of the object. 
     Based on the image, firstly provide a brief caption of the part. Secondly, describe what the part is made of (provide the major one). Finally, we combine what the object is and the material of the object to predict the hardness of the part. Choose whether to use Shore A hardness or Shore D hardness depending on the material. You may provide a range of values for hardness instead of a single value. 
 
@@ -20,6 +20,13 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
     Your answer must look like: caption, material, {material_property}. 
     The material type must be chosen from the above common material library. """ #Make sure to use Shore A or Shore D hardness, not Mohs hardness."""
 
+#     if material_property == "density":
+#         prompt = """You will be provided with captions that each describe an image of an object. The captions will be delimited with quotes ("). Based on the caption, give me 5 materials that the object might be made of, along with the mass densities (in kg/m^3) of each of those materials. You may provide a range of values for the mass density instead of a single value. Try to consider all the possible parts of the object. Do not include coatings like "paint" in your answer.
+
+# Format Requirement:
+# You must provide your answer as a list of 5 (material: mass density) pairs, each separated by a semi-colon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look like:
+# (material 1: low-high kg/m^3);(material 2: low-high kg/m^3);(material 3: low-high kg/m^3);(material 4: low-high kg/m^3);(material 5: low-high kg/m^3)
+# """
     # output_file = f'{case_name}.txt'
     output_file = 'verdict.txt'
     results_file_path = os.path.join(base_path, output_file)

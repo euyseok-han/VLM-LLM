@@ -1,7 +1,7 @@
 import json
 import numpy as np
 
-from arguments import get_args
+from .arguments import get_args
 
 
 # preds should be Nx2, gts should be N

@@ -1,8 +1,8 @@
 import os
 import subprocess
 import shutil
-from utils import get_last_file_in_folder, get_scenes_list
-from arguments import get_args
+from .nerf_util import get_last_file_in_folder, get_scenes_list
+from .arguments import get_args
 
 
 def move_files_to_folder(source_dir, target_dir):
@@ -61,13 +61,23 @@ def main():
         ])
 
         # Calling ns-render 
-        result = subprocess.run([
-            'ns-render', 'dataset',
-            '--load-config', os.path.join(ns_dir, 'config.yml'),
-            '--image-format', 'png',
-            '--output-path', os.path.join(base_dir, 'renders'),
+        if os.path.exists(os.path.join(base_dir, 'renders', 'test')):
+            result = subprocess.run([
+                'ns-render', 'dataset',
+                '--load-config', os.path.join(ns_dir, 'config.yml'),
+                '--image-format', 'png',
+                '--output-path', os.path.join(base_dir, 'renders'),
             '--rendered-output-names', 'raw-depth',
             '--split', 'train+test',
+        ])
+        else:
+            result = subprocess.run([
+                'ns-render', 'dataset',
+                '--load-config', os.path.join(ns_dir, 'config.yml'),
+                '--image-format', 'png',
+                '--output-path', os.path.join(base_dir, 'renders'),
+            '--rendered-output-names', 'raw-depth',
+            '--split', 'train',
         ])
 
         # Collect all depths in one folder

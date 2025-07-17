@@ -3,11 +3,19 @@ import base64
 import json
 
 
-PRED_CAND_MATS_DENSITY_SYS_MSG = """You will be provided with captions that each describe an image of an object. The captions will be delimited with quotes ("). Based on the caption, give me 5 materials that the object might be made of, along with the mass densities (in kg/m^3) of each of those materials. You may provide a range of values for the mass density instead of a single value. Try to consider all the possible parts of the object. Do not include coatings like "paint" in your answer.
+PRED_CAND_MATS_DENSITY_SYS_MSG = """
+Given a text file where each line is formatted like:
+<file path>,<object name>,<material>,<material property>,
+extract and analyze the material and the material property, where the property refers to the density of the material (e.g., metal, 7.85 g/cm³).
 
-Format Requirement:
-You must provide your answer as a list of 5 (material: mass density) pairs, each separated by a semi-colon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look like:
-(material 1: low-high kg/m^3);(material 2: low-high kg/m^3);(material 3: low-high kg/m^3);(material 4: low-high kg/m^3);(material 5: low-high kg/m^3)
+You must identify the most frequently occurring materials (up to 5) and their corresponding density ranges.
+
+You must provide your answer as a list of (material: density) pairs, each separated by a semicolon (;). Do not include any other text in your answer, as it will be parsed by a code script later. Your answer must look exactly like:
+(material 1: low-high g/cm³);(material 2: low-high g/cm³);(material 3: low-high g/cm³);(material 4: low-high g/cm³);(material 5: low-high g/cm³)
+If there are fewer than 5 distinct materials, you may provide fewer than 5 pairs.
+
+If a material appears with multiple density values, determine the lowest and highest values and present them as a range (e.g., 2.30–2.70 g/cm³). Round values to two decimal places. Use consistent units (g/cm³).
+Do not include any other text in your answer. Do not include unnecessary words besides the material in the material name. 
 """
 
 PRED_CAND_MATS_DENSITY_SYS_MSG_4V = """You will be given an image of an object. Based on the image, give me a short (5-10 words) description of what the object is, and also 5 materials (e.g. wood, plastic, foam) that the object might be made of, along with the mass densities (in kg/m^3) of each of those materials. You may provide a range of values for the mass density instead of a single value. Try to consider all the possible parts of the object. Do not include coatings like "paint" in your answer.
@@ -60,6 +68,7 @@ PRED_THICKNESS_EXAMPLE_OUTPUT_3 = "(plastic: 0.1-0.3 cm);(wood: 1.0-1.5 cm);(alu
 PRED_THICKNESS_EXAMPLE_INPUT_4 = 'Caption: "a metal rack with three shelves" Materials: "steel, aluminum, wood, plastic, iron"'
 PRED_THICKNESS_EXAMPLE_OUTPUT_4 = "(steel: 0.1-0.2 cm);(aluminum: 0.1-0.3 cm);(wood: 1.0-2.0 cm);(plastic: 0.5-1.0 cm);(iron: 0.5-1.0 cm)"
 
+import requests
 
 def gpt_candidate_materials(caption, property_name='density', model_name='gpt-3.5-turbo', seed=100):
 
@@ -71,16 +80,38 @@ def gpt_candidate_materials(caption, property_name='density', model_name='gpt-3.
         sys_msg = PRED_CAND_MATS_FRICTION_SYS_MSG
     else:
         raise NotImplementedError
-    response = openai.ChatCompletion.create(
-      model=model_name,
-        messages=[
-            {"role": "system", "content": sys_msg},
-            {"role": "user", "content": '"%s"' % caption},
+    # response = openai.ChatCompletion.create(
+    #   model=model_name,
+    #     messages=[
+    #         {"role": "system", "content": sys_msg},
+    #         {"role": "user", "content": '"%s"' % caption},
+    #     ],
+    #     request_timeout=20,
+    #     seed=seed,
+    # )
+    response = requests.post(
+    url="https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json",
+    },
+    data=json.dumps({
+        "model": "qwen/qwen-2.5-72b-instruct",
+        "messages": [
+        {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": sys_msg,
+                    },
+                ],
+            }
         ],
-        request_timeout=20,
-        seed=seed,
+        
+    })
     )
-    return response['choices'][0]['message']['content']
+    return response.json()['choices'][0]['message']['content']
 
 
 def gpt_thickness(caption, candidate_materials, mode='list', model_name='gpt-3.5-turbo', seed=100):
