@@ -15,7 +15,7 @@ def Qwen(image_path, prompt):
     base64_image = encode_image(image_path)
     client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
-            api_key="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",
+            api_key="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",
             )
     completion = client.chat.completions.create(
         model="qwen/qwen2.5-vl-72b-instruct:free",
