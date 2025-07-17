@@ -20,7 +20,8 @@ def query_vlm(base_path, case_name, vlm_type = "qwen"):
     Your answer must look like: caption, material, hardness low-high, <Shore A or Shore D>. 
     The material type must be chosen from the above common material library. Make sure to use Shore A or Shore D hardness, not Mohs hardness."""
 
-    output_file = f'{case_name}.txt'
+    # output_file = f'{case_name}.txt'
+    output_file = 'verdict.txt'
     results_file_path = os.path.join(base_path, output_file)
     # results_file_path = os.path.join(base_path, case_name, output_file)
     case_msg = ""
