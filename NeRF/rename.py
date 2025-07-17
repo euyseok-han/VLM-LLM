@@ -19,6 +19,7 @@ def main():
             'ns-process-data', 'images',
             '--data', input_dir,
             '--output-dir', output_dir,
+            "--no-gpu",
             ], env=env)
         
 if __name__ == "__main__":
