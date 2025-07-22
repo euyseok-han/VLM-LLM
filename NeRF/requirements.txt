@@ -1,7 +1,0 @@
-numpy
-pillow
-matplotlib
-transformers
-open_clip_torch
-open3d
-openai==0.28

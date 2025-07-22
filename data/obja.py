@@ -9,7 +9,7 @@ import trimesh
 processes = multiprocessing.cpu_count()
 
 uids = objaverse.load_uids()
-random_object_uids = random.sample(uids, 2)
+random_object_uids = random.sample(uids, 10)
 
 local_paths = objaverse.load_objects(
     uids=random_object_uids,

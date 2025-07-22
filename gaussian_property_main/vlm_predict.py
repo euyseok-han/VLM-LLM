@@ -1,12 +1,15 @@
 import os
 import argparse
 from gaussian_property_main.utils.vlm_utils import get_image_files, Qwen, GPT4V, Qwen_prev
-
+import numpy as np
+from PIL import Image
 
 def query_vlm(base_path, case_name, vlm_type = "gpt4"):
     input_image_path = os.path.join(base_path, case_name, "gpt_input")
     image_files = get_image_files(input_image_path)
-
+    print(f"Processing case: {case_name}, list of images: {image_files}")
+    mask_path = os.path.join(base_path, case_name, "seg", "001_s.npy")
+    mask = np.load(mask_path)
     material_list = "wood, metal, plastic, glass, fabric, foam, food, ceramic, paper, leather, aluminum, brass, bronze, copper, steel, stainless steel, iron, cast iron, titanium, zinc, lead, gold, silver, platinum, nickel, chrome, magnesium, tin, carbon fiber, fiberglass, acrylic, polyethylene, polypropylene, polystyrene, polycarbonate, polyvinyl chloride, nylon, rubber, silicone, latex, plywood, MDF, particle board, cork, bamboo, concrete, cement, asphalt, brick, clay, porcelain, terracotta, marble, granite, limestone, sandstone, quartz, tempered glass, frosted glass, mirror, cardboard, suede, denim, cotton, wool, silk, linen, polyester, felt, velvet, mesh, canvas, fur, straw, jute, carbon, graphite, resin, wax, ice, snow, sand, soil, mud, chalk, plaster, gypsum, sponge, tar, vinyl, PVC, Teflon, Kevlar, quartzite, basalt, lava rock, obsidian, bone, horn, shell, pearl"
     material_list = material_list.split(", ")
     material_library = "{" + ", ".join(material_list) + "}"
@@ -34,7 +37,7 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
     # os.makedirs(os.path.dirname(results_file_path), exist_ok=True)
 
     with open(results_file_path, 'a') as file:
-        for image_file in image_files:
+        for i, image_file in enumerate(image_files):
             try:
                 if vlm_type == 'qwen':
                     message = str(Qwen(image_file, prompt))
@@ -42,21 +45,26 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
                     message = str(GPT4V(image_file, prompt))
             except KeyError as e:
                 print(f"KeyError: {e} for image {image_file}")
-                message = "error,-1"
+                raise e
             except Exception as e:
                 print(f"Exception: {e} for image {image_file}")
-                message = "error,-1"
+                raise e
             write_msg = image_file + "," + message
             file.write(f"{write_msg}\n")
             file.flush()
-
+            property = message.split(",")[-1]
+            property_min = float(property.split('-')[0])
+            property_max = float(property.split('-')[-1])
+            property = (property_min + property_max) / 2
+            mask[mask==i] = property
+    
     print("Messages have been written to", results_file_path)
 
 
 def run_vlm(base_path, vlm_type):
     all_cases = os.listdir(base_path)
     output_file = 'verdict.txt'
-    results_file_path = os.path.join(base_path, output_file)
+    results_file_path = os.path.join(base_path[:-5], output_file)
     if os.path.exists(results_file_path):
         os.remove(results_file_path)
 

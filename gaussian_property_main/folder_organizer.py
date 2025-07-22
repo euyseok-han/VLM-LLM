@@ -6,12 +6,12 @@ from gaussian_property_main.utils.sam_utils import resize_image
 
 
 def process_images(base_path, remove_bg):
-    all_images = sorted(os.listdir(base_path))
+    all_images = sorted((x for x in os.listdir(base_path) if x.endswith('.png')))
     save_base_path = base_path + '_dirs'
     l = len(all_images)
-    for i in range(29, l, 30):
+    for i in range(0, l):
         image_name = all_images[i]
-        base_name, _ = os.path.splitext(image_name)
+        base_name, _ = os.path.splitext(image_name) # name without png extension
 
         # Create directories for saving processed images
         image_dir = os.path.join(save_base_path, base_name, 'images')

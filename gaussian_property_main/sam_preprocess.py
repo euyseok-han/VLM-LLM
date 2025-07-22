@@ -24,6 +24,9 @@ def sam_image(sam, base_path):
 
     # Process each dataset
     for dataset_id in os.listdir(base_path):
+        if dataset_id.endswith('.txt'):
+            continue
+
         dataset_path = os.path.join(base_path, dataset_id)
         img_folder = os.path.join(dataset_path, 'images')
 
@@ -50,7 +53,6 @@ def sam_image(sam, base_path):
         images = [img_list[i].permute(2, 0, 1)[None, ...] for i in range(len(img_list))]
         imgs = torch.cat(images)
         alphas = np.concatenate(alpha_list, 0)
-
         save_folder = os.path.join(dataset_path, 'seg')
         os.makedirs(save_folder, exist_ok=True)
 

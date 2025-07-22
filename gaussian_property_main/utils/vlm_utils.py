@@ -125,7 +125,7 @@ def get_image_files(directory):
             img_path = os.path.join(now_path, png)
             image_files.append(img_path)
 
-    image_files = sorted(image_files, key=lambda x: (x.split('/')[3], x.split('/')[4]))
+    image_files = sorted(image_files, key=lambda x: (x.split('/')[-2], x.split('/')[-1]))
 
     return image_files
 

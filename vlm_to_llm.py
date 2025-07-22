@@ -1,6 +1,6 @@
 import os
 import time
-from paint_it.paint_it import parse_args, main, StableDiffusion
+# from paint_it.paint_it import parse_args, main, StableDiffusion
 from gaussian_property_main.folder_organizer import process_images
 from gaussian_property_main.sam_preprocess import sam_model_registry, sam_image, save_gpt_input
 from gaussian_property_main.vlm_predict import run_vlm
@@ -8,44 +8,29 @@ from gaussian_property_main.vlm_predict import run_vlm
 
 if __name__ == '__main__':
 
-    # 1. Paint_it 
-    args = parse_args()
+    # # 1. Paint_it 
+    # args = parse_args()
 
-    # 직접 설정 추가 (필요 시)
-    args.objaverse_id = "efd177d0b7de4436bd8cb2671babf542"
-    args.identity = "a wood based something"
+    # # 직접 설정 추가 (필요 시)
+    # args.objaverse_id = "efd177d0b7de4436bd8cb2671babf542"
+    # args.identity = "a wood based something"
 
-    args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
+    # args.exp_name = '_'.join((args.identity.split(' ')[1:] + [args.objaverse_id[:6]]))
 
-    # 1-1. guidance model 불러오기
-    guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
-    guidance.eval()
-    for p in guidance.parameters():
-        p.requires_grad = False
+    # # 1-1. guidance model 불러오기
+    # guidance = StableDiffusion("cuda", min=args.sd_min, max=args.sd_max)
+    # guidance.eval()
+    # for p in guidance.parameters():
+    #     p.requires_grad = False
 
-    # 1-2. main 실행
-    main(args, guidance)
+    # # 1-2. main 실행
+    # main(args, guidance)
 
     # 2. Folder_organizer
-    # 2-1. move images from view_top to view_front
-    directory = "logs/"
-    for dir in os.listdir(directory):
-        for filename in os.listdir(os.path.join(directory, dir, "view_top")):
-            if filename.endswith(".png"):
-                old_path = os.path.join(directory, dir, "view_top", filename)
-
-            # 확장자 제거하고 _top 붙이기
-            name_only = filename[:-4]  # removes ".png"
-            new_filename = f"top_{name_only}.png"
-            new_path = os.path.join(directory, dir, "view_front", new_filename )
-
-            # 이름 변경
-            os.rename(old_path, new_path)
-    # 2-2. preprocess_images  
-    exp_name = time.strftime('%Y%m%d', time.localtime()) + '_' + args.exp_name
-    exp_name = "20250709_chair_chair"
-    path_to_preprocess = os.path.join(directory, exp_name)
-    path_to_preprocess = os.path.join(path_to_preprocess, "view_front")
+    # 2-2. preprocess_images
+    directory = "projected_views_ply"
+    
+    path_to_preprocess = directory
     preprocessed_save_path = path_to_preprocess + "_dirs"
     process_images(path_to_preprocess, True)
 
