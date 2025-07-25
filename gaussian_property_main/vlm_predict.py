@@ -65,17 +65,16 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
             for j, image_file in enumerate(sorted(os.listdir(os.path.join(input_image_path, image_files)))): # traversing each part
                 image_file = os.path.join(input_image_path, image_files, image_file)
                 try:
-                    match vlm_type:
-                        case 'qwen':
+                    if vlm_type == 'qwen':
                             message = str(Qwen(image_file, prompt))
-                        case 'gpt4':
+                    elif vlm_type == 'gpt4':
                             message = str(GPT4V(image_file, prompt))
-                        case 'gemini':
+                    elif vlm_type == 'gemini':
                             message = str(Gemini(image_file, prompt))
-                        case 'gemini_flash':
+                    elif vlm_type == 'gemini_flash':
                             message = str(GeminiFlash(image_file, prompt))
-                        case _:
-                            raise NotImplementedError
+                    else:
+                        raise NotImplementedError
                     
                 except KeyError as e:
                     print(f"KeyError: {e} for image {image_file}")
