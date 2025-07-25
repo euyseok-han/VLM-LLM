@@ -259,9 +259,19 @@ def save_gpt_input(base_path):
 
                 # Display mask overlay on the middle
                 ax2.imshow(image)
-                masked_image = np.ma.masked_where(mask != label, mask)
-                ax2.imshow(masked_image, cmap=cmap, alpha=0.4, vmin=np.min(mask), vmax=np.max(mask))
-                ax2.set_title('Mask Overlay')
+                ax2.set_title('Mask Overlay in Red')
+                # Create red mask where label matches
+                red_mask = np.zeros_like(image, dtype=np.uint8)
+                red_mask[mask == label] = [255, 0, 0]  # Red color
+
+                # Overlay red mask with alpha blending
+                blended = image.copy()
+                alpha = 0.65
+                blended[mask == label] = (
+                    (1 - alpha) * image[mask == label] + alpha * red_mask[mask == label]
+                ).astype(np.uint8)
+
+                ax2.imshow(blended)
                 ax2.axis('off')
 
                 # Display part image on the right

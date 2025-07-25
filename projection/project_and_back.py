@@ -41,8 +41,8 @@ r = pyrender.OffscreenRenderer(viewport_width, viewport_height)
 # ======== [5] Generate Multiple Views ========
 view_idx = 0
 camera_poses = []
-elevations = [0]
-azimuths = np.arange(0, 360, 90) #np.arange(0, 360, 30)
+elevations = [-80, -60, -30, -15, 0, 15, 30, 60, 80]
+azimuths = np.arange(0, 360, 30) #np.arange(0, 360, 30)
 
 merged_points = []
 merged_colors = []
@@ -119,30 +119,30 @@ for elev in elevations:
 all_points = np.vstack(merged_points)
 all_colors = np.vstack(merged_colors)
 
-# Create point cloud with colors
-pcd = o3d.geometry.PointCloud()
-pcd.points = o3d.utility.Vector3dVector(all_points)
-pcd.colors = o3d.utility.Vector3dVector(all_colors / 255.0)
+# # Create point cloud with colors
+# pcd = o3d.geometry.PointCloud()
+# pcd.points = o3d.utility.Vector3dVector(all_points)
+# pcd.colors = o3d.utility.Vector3dVector(all_colors / 255.0)
 
-# Apply voxel downsampling to reduce noise
-voxel_size = 0.01
-down_pcd = pcd.voxel_down_sample(voxel_size)
+# # Apply voxel downsampling to reduce noise
+# voxel_size = 0.01
+# down_pcd = pcd.voxel_down_sample(voxel_size)
 
-# Save the point cloud
-merged_path = os.path.join(output_dir, "merged_pointcloud.ply")
-o3d.io.write_point_cloud(merged_path, down_pcd)
+# # Save the point cloud
+# merged_path = os.path.join(output_dir, "merged_pointcloud.ply")
+# o3d.io.write_point_cloud(merged_path, down_pcd)
 
-# ======== [6] Save All Camera Poses ========
-pose_save_path = os.path.join(output_dir, "camera_poses.npz")
-np.savez(pose_save_path, poses=np.array([p[2] for p in camera_poses]), 
-         elevations=np.array([p[0] for p in camera_poses]), 
-         azimuths=np.array([p[1] for p in camera_poses]))
-print(f"Saved {view_idx} views and camera poses to {output_dir}")
+# # ======== [6] Save All Camera Poses ========
+# pose_save_path = os.path.join(output_dir, "camera_poses.npz")
+# np.savez(pose_save_path, poses=np.array([p[2] for p in camera_poses]), 
+#          elevations=np.array([p[0] for p in camera_poses]), 
+#          azimuths=np.array([p[1] for p in camera_poses]))
+# print(f"Saved {view_idx} views and camera poses to {output_dir}")
 
-# Visualize the point cloud
-o3d.visualization.draw_geometries(
-    [down_pcd],
-    window_name="Rendered Point Cloud",
-    width=800,
-    height=600,
-)
+# # Visualize the point cloud
+# o3d.visualization.draw_geometries(
+#     [down_pcd],
+#     window_name="Rendered Point Cloud",
+#     width=800,
+#     height=600,
+# )

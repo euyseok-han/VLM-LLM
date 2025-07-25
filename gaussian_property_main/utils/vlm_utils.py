@@ -4,46 +4,20 @@ import random
 import base64
 from openai import OpenAI
 
+import requests
+import json
+
 random.seed(123)  # Set random seed to 123
 
-def Qwen_prev(image_path, prompt):
-    # Base64 encoding of the image
-    def encode_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
+OPENROUTER_API_KEY = "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"
 
-    base64_image = encode_image(image_path)
-    client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key="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",
-            )
-    completion = client.chat.completions.create(
-        model="qwen/qwen2.5-vl-72b-instruct:free",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        # Using f-string to create a string containing the BASE64 encoded image data.
-                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
-                    },
-                    {"type": "text", "text": prompt},
-                ],
-            }
-        ],
-    )
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
-
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
 
 def GPT4V(image_path, prompt):
-    client = OpenAI(api_key="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")
+    client = OpenAI(api_key="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")
 
-    # Function to encode the image
-    def encode_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
 
     # Getting the base64 string
     base64_image = encode_image(image_path)
@@ -72,18 +46,14 @@ def GPT4V(image_path, prompt):
     return response.choices[0]
 
 
-import requests
-import json
+    
 def Qwen(image_path, prompt):
-    def encode_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
 
     base64_image = encode_image(image_path)
     response = requests.post(
     url="https://openrouter.ai/api/v1/chat/completions",
     headers={
-        "Authorization": "Bearer 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",
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
     },
     data=json.dumps({
@@ -110,7 +80,87 @@ def Qwen(image_path, prompt):
     )
     return response.json()['choices'][0]['message']['content']
 
+def Gemini(image_path, prompt):
 
+    base64_image = encode_image(image_path)
+    API_KEY = 'AIzaSyCBo9HY_AvmfdaNVZjz_VJwlm-ligO2W3I'
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={API_KEY}"
+
+    headers = {
+        'Content-Type': 'application/json',
+    }
+
+    payload = {
+    "contents": [
+        {
+            "parts": [
+                {
+                    "text": prompt  # 프롬프트
+                },
+                {
+                    "inline_data": {
+                        "mime_type": "image/png",
+                        "data": base64_image
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+    response = requests.post(url, headers=headers, json=payload)
+    result = response.json()
+
+    if response.ok:
+        result = response.json()
+        ret = result["candidates"][0]["content"]["parts"][0]["text"]
+        print(ret)
+        return ret
+    else:
+        print("Error:", response.status_code, response.text)
+        raise ValueError
+
+def GeminiFlash(image_path, prompt):
+    # 2. API 설정
+    base64_image = encode_image(image_path)
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # 3. 요청 페이로드 설정
+    payload = {
+        "model": "google/gemini-2.5-flash-lite",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/png;base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+    }
+
+    # 4. 요청 보내기
+    response = requests.post(url, headers=headers, json=payload)
+
+    # 5. 결과 확인
+    if response.status_code == 200:
+        result = response.json()
+        return result["choices"][0]["message"]["content"]
+    elif response.status_code == 408:
+        return GeminiFlash(image_path, prompt)
+    else:
+        print("Error:", response.status_code, response.text)
+        raise ValueError
 
 def get_image_files(directory):
     image_files = []

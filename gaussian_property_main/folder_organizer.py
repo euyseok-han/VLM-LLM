@@ -14,7 +14,7 @@ def process_images(base_path, remove_bg):
         base_name, _ = os.path.splitext(image_name) # name without png extension
 
         # Create directories for saving processed images
-        image_dir = os.path.join(save_base_path, base_name, 'images')
+        image_dir = os.path.join(save_base_path, 'scene', 'images')
         os.makedirs(image_dir, exist_ok=True)
 
         # Open the image
@@ -27,7 +27,8 @@ def process_images(base_path, remove_bg):
             img_pil = resize_image(img_pil, 1280)
 
             # Save the processed image
-            mask_save_path = os.path.join(image_dir, '001.png')
+            base_name = str(i + 1).zfill(3)
+            mask_save_path = os.path.join(image_dir, f'{base_name}.png')
             img_pil.save(mask_save_path)
 
 

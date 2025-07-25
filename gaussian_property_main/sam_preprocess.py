@@ -23,19 +23,19 @@ def sam_image(sam, base_path):
     )
 
     # Process each dataset
-    for dataset_id in os.listdir(base_path):
+    for dataset_id in os.listdir(base_path): # in my code, there is only one dataset_id(scene)
         if dataset_id.endswith('.txt'):
             continue
 
         dataset_path = os.path.join(base_path, dataset_id)
         img_folder = os.path.join(dataset_path, 'images')
 
-        data_list = sorted(os.listdir(img_folder))
+        data_list = sorted(os.listdir(img_folder)) # number of views
 
         img_list = []
         alpha_list = []
 
-        for data_path in data_list:
+        for i, data_path in enumerate(data_list):
             image_path = os.path.join(img_folder, data_path)
             image_rgba = cv2.imread(image_path, cv2.IMREAD_UNCHANGED).astype(np.uint8)
             alpha = image_rgba[:, :, 3]

@@ -86,7 +86,7 @@ obj_dir = "logs/20250709_chair_chair/"      # .obj 파일 경로 입력
 obj_file_path = os.path.join(obj_dir, "mesh.obj")      # .obj 파일 경로 입력
 texture_path = os.path.join(obj_dir, "texture_kd.png")  # 텍스처 이미지 경로 입력
 ply_output_path = os.path.join(obj_dir, "pointcloud_from_mesh.ply")  # 저장할 .ply 경로
-textured_mesh_to_colored_pointcloud(obj_file_path, texture_path, ply_output_path, samples_per_face=100)
+textured_mesh_to_colored_pointcloud(obj_file_path, texture_path, ply_output_path, samples_per_face=5000)
 
 print(f"Point cloud saved as: {ply_output_path}")
 
