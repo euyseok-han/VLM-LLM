@@ -1,6 +1,4 @@
 # https://github.com/mikedh/trimesh
-mtllib material.mtl
-usemtl material_0
 v 0.01536026 -0.56523354 0.20726327
 v 0.01547886 -0.56523346 0.20725624
 v 0.01483905 -0.56523341 0.20828383
