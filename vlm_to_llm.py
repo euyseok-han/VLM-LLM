@@ -47,5 +47,5 @@ if __name__ == '__main__':
 
     # # 4. vlm_predict
     # print("Feed images to VLM...")
-    run_vlm(preprocessed_save_path, vlm_type="gemini_flash")
+    #run_vlm(preprocessed_save_path, vlm_type="gemini_flash")
     # run_vlm_nir(preprocessed_save_path, vlm_type="gemini_flash")
