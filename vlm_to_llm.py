@@ -38,7 +38,7 @@ if __name__ == '__main__':
     process_images(path_to_preprocess+"_nir", True)
 
     # # # # 3. Sam_preprocess
-    sam = sam_model_registry["vit_h"](checkpoint="/local_data_2/urp25su_hanuiseok/sam_vit_h_4b8939.pth").to('cuda')
+    sam = sam_model_registry["vit_h"](checkpoint="/home/urp25su_hanuiseok/sam_vit_h_4b8939.pth").to('cuda')
     # print("sam image...")
     sam_image(sam, preprocessed_save_path)
     # print("save gpt input...")
