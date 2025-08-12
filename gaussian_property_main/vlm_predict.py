@@ -142,7 +142,7 @@ def query_vlm(base_path, case_name, vlm_type = "gpt4"):
             cbar.ax.tick_params(labelsize=10)
 
             # 4. 이미지 저장
-            plt.savefig(os.path.join(base_path, case_name, "property_seg", str(i + 1).zfill(3) + ".png"), bbox_inches='tight', pad_inches=0.1)
+            # plt.savefig(os.path.join(base_path, case_name, "property_seg", str(i + 1).zfill(3) + ".png"), bbox_inches='tight', pad_inches=0.1)
             plt.close()
         save_path = os.path.join(base_path, case_name, "property_seg", "property_seg.npy")
         stacked = np.stack(property_seg, axis=0).astype(np.float32)  # 예시
@@ -426,7 +426,7 @@ def run_vlm(base_path, vlm_type = "gpt4"):
     for case_name in all_cases:
         save_path = os.path.join(base_path, case_name, "property_seg", "property_seg.npy")
         query_vlm(base_path, case_name, vlm_type=vlm_type)
-        backproject_to_pcd(save_path, "projected_views_ply/point_index_map_all.npy")
+        # backproject_to_pcd(save_path, "projected_views_ply/point_index_map_all.npy")
 
 def run_vlm_nir(base_path, vlm_type = "gpt4"):
     all_cases = os.listdir(base_path) # only one case in my code
