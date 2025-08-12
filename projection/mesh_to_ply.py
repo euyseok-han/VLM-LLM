@@ -82,11 +82,11 @@ def textured_mesh_to_colored_pointcloud(obj_path, texture_path, output_ply_path,
     print(f"컬러 PLY 파일 저장 완료: {output_ply_path}")
 
 # === 예시 사용 ===
-obj_dir = "logs/20250709_chair_chair/"      # .obj 파일 경로 입력
+obj_dir = "logs/20250725_red_sofa_with_wooden_legs_be8fb6/"      # .obj 파일 경로 입력
 obj_file_path = os.path.join(obj_dir, "mesh.obj")      # .obj 파일 경로 입력
 texture_path = os.path.join(obj_dir, "texture_kd.png")  # 텍스처 이미지 경로 입력
 ply_output_path = os.path.join(obj_dir, "pointcloud_from_mesh.ply")  # 저장할 .ply 경로
-textured_mesh_to_colored_pointcloud(obj_file_path, texture_path, ply_output_path, samples_per_face=5000)
+textured_mesh_to_colored_pointcloud(obj_file_path, texture_path, ply_output_path, samples_per_face=100)
 
 print(f"Point cloud saved as: {ply_output_path}")
 

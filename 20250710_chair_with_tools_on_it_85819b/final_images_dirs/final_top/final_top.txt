@@ -1,3 +1,0 @@
-./logs/20250710_chair_with_tools_on_it_85819b/final_images_dirs/final_top/gpt_input/01/02.png,table top, wood, 60-80, Shore D
-./logs/20250710_chair_with_tools_on_it_85819b/final_images_dirs/final_top/gpt_input/01/00.png,leg of the chair, wood, 60-80, Shore D
-./logs/20250710_chair_with_tools_on_it_85819b/final_images_dirs/final_top/gpt_input/01/01.png,backrest of a chair, wood, 60-80, Shore D

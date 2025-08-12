@@ -15,14 +15,14 @@ import open3d as o3d
 
 # === 설정 ===
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-output_dir = "projected_views_ply_property"
+output_dir = "projected_views_ply"
 os.makedirs(output_dir, exist_ok=True)
 
 image_size = 512
 fov = 60.0
 
 # === 포인트 클라우드 불러오기 ===
-pcd = o3d.io.read_point_cloud("logs/20250709_chair_chair/pointcloud_with_property_color.ply")
+pcd = o3d.io.read_point_cloud("logs/20250725_red_sofa_with_wooden_legs_be8fb6/pointcloud_from_mesh.ply")
 points_np = np.asarray(pcd.points)
 colors_np = np.asarray(pcd.colors)
 
@@ -45,7 +45,7 @@ renderer = PointsRenderer(
 
 # === 시점 정의 ===
 elevations = [0, -60, 60]
-azimuths = np.arange(0, 360, 30)
+azimuths = np.arange(0, 360, 90)
 
 all_point_indices = []
 

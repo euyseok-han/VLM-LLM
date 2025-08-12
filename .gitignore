@@ -11,3 +11,7 @@ outputs/
 external/
 *.pth
 *.pyc
+*.ply
+*.obj
+data/
+logs/

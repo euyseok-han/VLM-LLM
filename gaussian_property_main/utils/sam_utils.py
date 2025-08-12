@@ -208,6 +208,7 @@ def sam_encoder(image, alpha, save_path, mask_generator):
 
 
 def save_gpt_input(base_path):
+    base_path = base_path + "_dirs"
     all_cases = os.listdir(base_path)
     for path in all_cases:
         case_name = os.path.join(base_path, path)
@@ -259,12 +260,12 @@ def save_gpt_input(base_path):
 
                 # Display mask overlay on the middle
                 ax2.imshow(image)
-                ax2.set_title('Mask Overlay in Red')
-                # Create red mask where label matches
+                ax2.set_title('Mask Overlay in Blue')
+                # Create blue mask where label matches
                 red_mask = np.zeros_like(image, dtype=np.uint8)
-                red_mask[mask == label] = [255, 0, 0]  # Red color
+                red_mask[mask == label] = [0, 0, 255]  # Blue color
 
-                # Overlay red mask with alpha blending
+                # Overlay blue mask with alpha blending
                 blended = image.copy()
                 alpha = 0.65
                 blended[mask == label] = (
@@ -278,6 +279,96 @@ def save_gpt_input(base_path):
                 ax3.imshow(part_image)
                 ax3.set_title('Part Image')
                 ax3.axis('off')
+
+                plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05, wspace=0.1, hspace=0.1)
+
+                # Save the image to file
+                plt.savefig(f'{cur_gpt_path}/{str(label).zfill(2)}.png')
+
+                plt.close()
+
+
+def save_gpt_input_nir(base_path_with_dirs):
+    base_path = base_path_with_dirs + "_dirs"
+    all_cases = os.listdir(base_path)
+    nir_base_path = base_path_with_dirs + "_nir_dirs"
+    for path in all_cases:
+        case_name = os.path.join(base_path, path)
+        nir_case_name = os.path.join(nir_base_path, path)
+        image_base = f"{case_name}/images"
+        nir_image_base = f"{nir_case_name}/images"
+        number_view = len(os.listdir(image_base))
+        feature_base = f"{case_name}/seg"
+        vis_seg_base = f"{case_name}/vis_seg"
+
+        base_gpt_test_path = os.path.join(case_name, "gpt_input_nir")
+        os.makedirs(base_gpt_test_path, exist_ok=True)
+
+        for i in range(1, number_view + 1):
+            cur_gpt_path = os.path.join(base_gpt_test_path, str(i).zfill(2))
+            os.makedirs(cur_gpt_path, exist_ok=True)
+
+            img_path = os.path.join(image_base, str(i).zfill(3) + '.png')
+            nir_path = os.path.join(nir_image_base, str(i).zfill(3) + '.png')
+            s_path = os.path.join(feature_base, str(i).zfill(3) + '_s.npy')
+            seg_path = os.path.join(vis_seg_base, str(i).zfill(3) + '/part')
+            ss = np.load(s_path)
+            rgba_image = cv2.imread(img_path)
+            nir_image = cv2.imread(nir_path)
+            image = cv2.cvtColor(rgba_image, cv2.COLOR_BGR2RGB)
+            nir_image = cv2.cvtColor(nir_image, cv2.COLOR_BGR2RGB)
+            mask = ss
+
+            # Find different labels in the mask
+            labels = np.unique(mask)
+            labels = labels[labels != -1]  # Remove non-material parts from the mask
+
+            # Generate random colors for each label
+            colors = {}
+            for label in labels:
+                colors[label] = (random.random(), random.random(), random.random())
+
+            # Create color mapping
+            cmap = ListedColormap([colors[label] for label in labels])
+
+            for label in labels:
+                part_image = cv2.imread(os.path.join(seg_path, f"mask_{label}.png"))
+                part_image = cv2.cvtColor(part_image, cv2.COLOR_BGR2RGB)
+
+                # Create plot
+                fig, (ax1, ax2, ax3, ax4    ) = plt.subplots(1, 4, figsize=(24, 8))  # 1 row, 4 columns
+
+                # Display original image on the left
+                ax1.imshow(image)
+                ax1.set_title('Original Image')
+                ax1.axis('off')  # Turn off axis
+
+                # Display mask overlay on the middle
+                ax2.imshow(image)
+                ax2.set_title('Mask Overlay in Blue')
+                # Create blue mask where label matches
+                red_mask = np.zeros_like(image, dtype=np.uint8)
+                red_mask[mask == label] = [0, 0, 255]  # Blue color
+
+                # Overlay blue mask with alpha blending
+                blended = image.copy()
+                alpha = 0.65
+                blended[mask == label] = (
+                    (1 - alpha) * image[mask == label] + alpha * red_mask[mask == label]
+                ).astype(np.uint8)
+
+                ax2.imshow(blended)
+                ax2.axis('off')
+
+                # Display part image on the right
+                ax3.imshow(part_image)
+                ax3.set_title('Part Image')
+                ax3.axis('off')
+
+                # Display color map on the far right
+                ax4.imshow(nir_image)
+                ax4.set_title('NIR Image')
+                ax4.axis('off')
 
                 plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05, wspace=0.1, hspace=0.1)
 
