@@ -127,7 +127,6 @@ dependencies:
       - pyquaternion==0.9.9
       - pyrender==0.1.45
       - python-dateutil==2.9.0.post0
-      - pytorch3d==0.7.5
       - pytz==2025.2
       - pyyaml==6.0.2
       - referencing==0.36.2
@@ -148,9 +147,6 @@ dependencies:
       - termcolor==3.1.0
       - threadpoolctl==3.6.0
       - tifffile==2025.5.10
-      - torch==2.1.2+cu121
-      - torchaudio==2.1.2+cu121
-      - torchvision==0.16.2+cu121
       - tqdm==4.67.1
       - traitlets==5.14.3
       - trimesh==4.7.1
