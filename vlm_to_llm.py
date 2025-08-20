@@ -34,18 +34,20 @@ if __name__ == '__main__':
     preprocessed_save_path = path_to_preprocess + "_dirs"
     os.makedirs(preprocessed_save_path, exist_ok=True)
     print("process image...")
-    process_images(path_to_preprocess, True)
+    # process_images(path_to_preprocess, True)
     # process_images(path_to_preprocess+"_nir", True)
 
     # # # # 3. Sam_preprocess
     sam = sam_model_registry["vit_h"](checkpoint="/home/urp25su_hanuiseok/sam_vit_h_4b8939.pth").to('cuda')
     # print("sam image...")
-    sam_image(sam, preprocessed_save_path)
+    # sam_image(sam, preprocessed_save_path)
     # print("save gpt input...")
-    save_gpt_input(path_to_preprocess)
+    # save_gpt_input(path_to_preprocess)
     # save_gpt_input_nir(path_to_preprocess)
 
     # # 4. vlm_predict
-    # print("Feed images to VLM...")
-    #run_vlm(preprocessed_save_path, vlm_type="gemini_flash")
+    print("Feeding images to VLM...")
+    run_vlm(preprocessed_save_path, vlm_type="gemini_flash")
     # run_vlm_nir(preprocessed_save_path, vlm_type="gemini_flash")
+
+

@@ -1,0 +1,27 @@
+projected_views_blender_dirs/scene/gpt_input/01/00.png,Wood slat, wood, 10.0-11.0
+projected_views_blender_dirs/scene/gpt_input/01/01.png,Wooden support, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/01/03.png,Armrest, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/01/04.png,Wooden seat, wood, 10.0-30.0
+projected_views_blender_dirs/scene/gpt_input/01/07.png,(seat support, metal, 100-150)
+projected_views_blender_dirs/scene/gpt_input/01/08.png,Wooden back support, wood, 9.7-12.0
+projected_views_blender_dirs/scene/gpt_input/01/09.png,Wooden brace, wood, 10.0-10.0
+projected_views_blender_dirs/scene/gpt_input/02/00.png,(Wooden seat, wood, 10.0-20.0)
+projected_views_blender_dirs/scene/gpt_input/02/01.png,wooden seat, wood, 11.0-12.0
+projected_views_blender_dirs/scene/gpt_input/02/02.png,(wood seat, wood, 0.1-0.2)
+projected_views_blender_dirs/scene/gpt_input/02/03.png,Wooden seat, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/02/04.png,Wooden seat, wood, 8.0-16.0
+projected_views_blender_dirs/scene/gpt_input/03/00.png,Wooden seat, wood, 10.0-12.4
+projected_views_blender_dirs/scene/gpt_input/03/01.png,(wood seat, wood, 10.0-15.0)
+projected_views_blender_dirs/scene/gpt_input/03/02.png,Wooden seat, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/03/03.png,chair frame, metal, 200-300
+projected_views_blender_dirs/scene/gpt_input/03/04.png,Seat surface, wood, 10.0-11.0
+projected_views_blender_dirs/scene/gpt_input/03/07.png,wooden seat surface, wood, 10.0-14.0
+projected_views_blender_dirs/scene/gpt_input/03/08.png,(Seat, wood, 11.0-13.0)
+projected_views_blender_dirs/scene/gpt_input/03/09.png,(wooden seat, wood, 10.0-15.0)
+projected_views_blender_dirs/scene/gpt_input/04/00.png,Wooden seat, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/04/01.png,Wooden desk surface, wood, 5.0-15.0
+projected_views_blender_dirs/scene/gpt_input/04/02.png,Wooden seat, wood, 10.0-15.0
+projected_views_blender_dirs/scene/gpt_input/04/03.png,(Wooden support, wood, 8.0-12.0)
+projected_views_blender_dirs/scene/gpt_input/04/04.png,Wooden seat, wood, 10.0-20.0
+projected_views_blender_dirs/scene/gpt_input/04/05.png,Wooden leg, wood, 10.0-20.0
+projected_views_blender_dirs/scene/gpt_input/05/00.png,Wooden step, wood, 10-20

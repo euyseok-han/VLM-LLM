@@ -306,6 +306,9 @@ def query_vlm_nir(base_path, case_name, vlm_type = "gpt4"):
         For the same material, please provide consistent or similar NIR reflectance values across responses.
         """
 
+# Realworld -> futurework
+
+
 #     if material_property == "density":
 #         prompt = """You will be provided with captions that each describe an image of an object. The captions will be delimited with quotes ("). Based on the caption, give me 5 materials that the object might be made of, along with the mass densities (in kg/m^3) of each of those materials. You may provide a range of values for the mass density instead of a single value. Try to consider all the possible parts of the object. Do not include coatings like "paint" in your answer.
 
@@ -439,8 +442,8 @@ def run_vlm_nir(base_path, vlm_type = "gpt4"):
 
 def backproject_to_pcd(property_seg_path, pcd_idx_path="projected_views_ply/point_index_map_all.npy"):
     # === Load data ===
-    property_seg = np.load(property_seg_path)  # shape: (36, H, W)
-    point_index_map_all = np.load(pcd_idx_path) # "projected_views_ply/point_index_map_all.npy"  shape: (36, H, W)
+    property_seg = np.load(property_seg_path)  # shape: (num_of_views, H, W)
+    point_index_map_all = np.load(pcd_idx_path) # "projected_views_ply/point_index_map_all.npy"  shape: (num_of_views, H, W)
 
     # === Flatten for processing ===
     view_count, H, W = property_seg.shape
@@ -510,6 +513,82 @@ def backproject_to_pcd(property_seg_path, pcd_idx_path="projected_views_ply/poin
     cb.set_label(material_property)
     plt.savefig('projected_views_ply/color_legend.png')
     plt.close()
+
+def backproject_to_blender(property_seg_path, pcd_idx_path="/home/han/workspace/VLM-LLM/projected_views_pcd/points.npy"):
+    # === Load data ===
+    property_seg = np.load(property_seg_path)  # shape: (num_of_views, H, W)
+    point_index_map_all = np.load(pcd_idx_path) #  shape: (num_of_views, H, W, 3)
+
+    # === Flatten for processing ===
+    view_count, H, W, _ = property_seg.shape
+    property_seg_flat = property_seg.reshape(view_count, -1)
+    point_index_map_all = point_index_map_all.transpose(0, 3, 1, 2)
+    point_index_flat = point_index_map_all.reshape(view_count, 3, H * W)
+
+    # === Accumulate property values for each 3D point ===
+    point_values = defaultdict(list)
+    for view in range(view_count):
+        for i in range(H * W):
+            point_idx = point_index_flat[view, i]
+            prop_val = property_seg_flat[view, i]
+            if point_idx != -1 and prop_val != -1:
+                point_values[point_idx].append(prop_val)
+
+    # === Load point cloud ===
+    
+    pcd = o3d.io.read_point_cloud(pcd_path)
+    points = np.asarray(pcd.points)
+    n_points = len(points)
+    print(n_points)
+    # print(point_values)
+    
+
+    # === Average values and prepare final array ===
+    point_property_array = np.full(n_points, -1.0, dtype=np.float32)
+    for idx, values in point_values.items():
+        counter = Counter(values)
+        most_common_value, _ = counter.most_common(1)[0]
+        point_property_array[idx] = most_common_value
+
+    
+
+    # === Normalize property values to [0, 1] for color mapping ===
+
+
+    # === Apply colormap (e.g., viridis) ===
+    cmap = plt.get_cmap('viridis')
+    valid_mask = np.zeros(n_points, dtype=bool)
+    valid_colors = np.ones((n_points, 3)) * 0.5  # default gray
+    valid_indices = np.where((point_property_array != -1))[0]
+    valid_mask[valid_indices] = True
+    points = points[valid_mask]
+    filtered_props = point_property_array[valid_mask]
+    vmin, vmax = filtered_props.min(), filtered_props.max()
+    norm_props = np.clip((filtered_props - vmin) / (vmax - vmin), 0, 1)
+
+    cmap = plt.get_cmap('viridis')
+    colors = np.array([cmap(val)[:3] for val in norm_props])
+
+
+    pcd.colors = o3d.utility.Vector3dVector(colors)
+
+    # === Save updated point cloud ===
+    filtered_pcd = o3d.geometry.PointCloud()
+    filtered_pcd.points = o3d.utility.Vector3dVector(points)
+    filtered_pcd.colors = o3d.utility.Vector3dVector(colors)
+    o3d.io.write_point_cloud("projected_views_ply/pointcloud_with_property_color.ply", filtered_pcd)
+
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    # 컬러바 이미지로 저장
+    fig, ax = plt.subplots(figsize=(6, 1))
+    fig.subplots_adjust(bottom=0.5)
+
+    cb = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation='horizontal')
+    cb.set_label(material_property)
+    plt.savefig('projected_views_ply/color_legend.png')
+    plt.close()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=" ")

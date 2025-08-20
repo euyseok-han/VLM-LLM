@@ -177,7 +177,7 @@ def sam_encoder(image, alpha, save_path, mask_generator):
     os.makedirs(vis_seg_path, exist_ok=True)
     os.makedirs(os.path.join(vis_seg_path, "part"), exist_ok=True)
 
-    image = cv2.cvtColor(image[0].permute(1, 2, 0).numpy().astype(np.uint8), cv2.COLOR_BGR2RGB)
+    image = cv2.cvtColor(image[0].permute(1, 2, 0).numpy().astype(np.uint8), cv2.COLOR_BGR2RGB) #image was unsqueezed #H, W, C (C is Channel)
     masks_default, masks_s, masks_m, masks_l = mask_generator.generate(image)
     masks_m = masks_update(masks_m, iou_thr=0.8, score_thr=0.7, inner_thr=0.5)[0]
 
