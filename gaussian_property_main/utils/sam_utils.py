@@ -206,6 +206,31 @@ def sam_encoder(image, alpha, save_path, mask_generator):
     save_numpy(save_path, seg_map)
     return Image.fromarray(seg_map_vis)
 
+def make_framed_image(image, frame_size):
+    image_with_frame = cv2.copyMakeBorder(
+                image,
+                frame_size, frame_size, frame_size, frame_size,
+                cv2.BORDER_CONSTANT,
+                value=(0, 0, 0)  # 검은색
+            )
+    return image_with_frame
+
+def make_image_with_bg(img_path):
+    rgba_image = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+    rgb = rgba_image[:, :, :3]
+    alpha = rgba_image[:, :, 3]
+    alpha_f = alpha.astype(float) / 255.0
+    alpha_f = np.repeat(alpha_f[:, :, np.newaxis], 3, axis=2)
+    # 흰색 배경 생성
+    white_bg = np.ones_like(rgb, dtype=np.uint8) * 255
+
+    # 알파 블렌딩: 투명은 흰색, 불투명은 원본
+    image_white_bg = (rgb * alpha_f + white_bg * (1 - alpha_f)).astype(np.uint8)
+
+    # 색공간 변환 (OpenCV는 BGR 기본)
+    image_white_bg = cv2.cvtColor(image_white_bg, cv2.COLOR_BGR2RGB)
+
+    return image_white_bg
 
 def save_gpt_input(base_path):
     base_path = base_path + "_dirs"
@@ -240,8 +265,13 @@ def save_gpt_input(base_path):
 
             # Generate random colors for each label
             colors = {}
+            seen = set()
             for label in labels:
-                colors[label] = (random.random(), random.random(), random.random())
+                color = (random.random(), random.random(), random.random())
+                while color in seen:
+                    color = (random.random(), random.random(), random.random())
+                colors[label] = color
+                seen.add(color)
 
             # Create color mapping
             cmap = ListedColormap([colors[label] for label in labels])
@@ -267,7 +297,7 @@ def save_gpt_input(base_path):
 
                 # Overlay blue mask with alpha blending
                 blended = image.copy()
-                alpha = 0.65
+                alpha = 0.3
                 blended[mask == label] = (
                     (1 - alpha) * image[mask == label] + alpha * red_mask[mask == label]
                 ).astype(np.uint8)
@@ -352,7 +382,7 @@ def save_gpt_input_nir(base_path_with_dirs):
 
                 # Overlay blue mask with alpha blending
                 blended = image.copy()
-                alpha = 0.65
+                alpha = 0.3
                 blended[mask == label] = (
                     (1 - alpha) * image[mask == label] + alpha * red_mask[mask == label]
                 ).astype(np.uint8)

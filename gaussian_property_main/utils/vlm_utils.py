@@ -9,7 +9,7 @@ import json
 
 random.seed(123)  # Set random seed to 123
 
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
