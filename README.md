@@ -7,6 +7,6 @@ projected_views_ply: 3D back projection pcd 파일 저장처
 
 이미지 넣은 후 
 * process_vlm_image.py: 이미지 전처리
-* query_vlm.py: VLM query(open router key 사용자에 맞추어 업데이트 필요)
+* query_vlm.py: VLM query 및 3d backprojection - (실행 전, open router key 사용자에 맞추어 업데이트 필요)
 
 
